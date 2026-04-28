@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>ClubRoom</title>
+        <script type="importmap">
+        {
+            "imports": {
+            "vue": "https://cdn.jsdelivr.net/npm/vue@3.5.32/dist/vue.esm-browser.js",
+            "@graffiti-garden/implementation-local": "https://cdn.jsdelivr.net/npm/@graffiti-garden/implementation-local@1.2.0/dist/browser/index.js",
+            "@graffiti-garden/implementation-decentralized": "https://cdn.jsdelivr.net/npm/@graffiti-garden/implementation-decentralized@0.0.9/dist/browser/index.js",
+            "@graffiti-garden/wrapper-vue": "https://cdn.jsdelivr.net/npm/@graffiti-garden/wrapper-vue@1.2.2/dist/browser/plugin.mjs"
+            }
+        }
+        </script>
+        <script src="index.js" type="module"></script>
+        <link rel="stylesheet" href="style.css" />
+    </head>
+    <body>
+        <div id="app">Loading...</div>
+        <template id="template">
+
+        <div v-if="!$graffitiSession.value">
+            <h1>ClubRoom</h1>
+            <button @click="$graffiti.login()">Log In</button>
+        </div>
+
+        <div v-else class="app-layout">
+
+            <aside class="sidebar">
+            <div class="sidebar-top">
+                <h2>Create a club</h2>
+                <button @click="$graffiti.logout($graffitiSession.value)">Log Out</button>
+            </div>
+
+            <form @submit.prevent="createClub">
+                <input type="text" v-model="newClubName" placeholder="New club name" />
+                <button type="submit" :disabled="!newClubName || isCreating">
+                {{ isCreating ? 'Creating...' : 'Create Club' }}
+                </button>
+            </form>
+
+            <div class="discover-section">
+                <h3>Find a club</h3>
+                <input type="text" v-model="searchQuery" placeholder="Search clubs..." />
+                <ul v-if="searchQuery">
+                <li v-for="club of filteredAllClubs" :key="club.url">
+                    {{ club.value.title }}
+                    <button v-if="!joinedChannels.has(club.value.channel)" @click="joinClub(club)">Join</button>
+                    <span v-else>(joined)</span>
+                </li>
+                <li v-if="filteredAllClubs.length === 0">No clubs found.</li>
+                </ul>
+            </div>
+
+
+            <h3>Your Clubs</h3>
+            <ul>
+                <li
+                v-for="club of joinedClubs"
+                :key="club.channel"
+                @click="activeChannel = club.channel"
+                :style="{ fontWeight: activeChannel === club.channel ? 'bold' : 'normal', cursor: 'pointer' }"
+                >
+                {{ club.title }}
+                <button @click.stop="leaveClub(club.channel)">Leave</button>
+                </li>
+                <li v-if="joinedClubs.length === 0">Search for clubs above to join one.</li>
+            </ul>
+
+            <div class="calendar-section">
+                <div class="cal-header">
+                  <button @click="calendarOffset--">&#8249;</button>
+                  <span>{{ calendarMonthLabel }}</span>
+                  <button @click="calendarOffset++">&#8250;</button>
+                </div>
+                <div class="cal-grid">
+                  <span v-for="d in ['Su','Mo','Tu','We','Th','Fr','Sa']" class="cal-dow">{{ d }}</span>
+                  <span v-for="blank in calendarBlanks" class="cal-blank"></span>
+                  <span v-for="day in calendarDays" class="cal-day" :class="{ today: day === todayDate && calendarOffset === 0 }">{{ day }}</span>
+                </div>
+              </div>
+
+            </aside>
+
+            <main class="chat-pane">
+            <template v-if="activeChannel && activeClubName">
+                <h2>{{ activeClubName }}</h2>
+
+                <div class="messages-wrap">
+                <p v-if="areMessagesLoading"><em>Loading messages...</em></p>
+                <ul v-else>
+                    <li v-for="msg of sortedMessages" :key="msg.url">
+                    <strong>
+                        <graffiti-actor-to-handle :actor="msg.actor"></graffiti-actor-to-handle>
+                    </strong>: {{ msg.value.content }}
+                    <span class="time">{{ formatTime(msg.value.published) }}</span>
+                    <button
+                        v-if="msg.actor === $graffitiSession.value?.actor"
+                        @click="deleteMessage(msg)"
+                        :disabled="isDeleting.has(msg.url)"
+                    >{{ isDeleting.has(msg.url) ? 'Deleting...' : 'Delete' }}</button>
+                    </li>
+                    <li v-if="sortedMessages.length === 0">No messages yet.</li>
+                </ul>
+                </div>
+
+                <form @submit.prevent="sendMessage">
+                <input type="text" v-model="myMessage" placeholder="Type a message..." />
+                <button type="submit" :disabled="!myMessage || isSending">
+                    {{ isSending ? 'Sending...' : 'Send' }}
+                </button>
+                </form>
+            </template>
+
+            <p v-else>Select a club to start chatting.</p>
+            </main>
+        </div>
+        </template>
+    </body>
+    </html>

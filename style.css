@@ -1,0 +1,86 @@
+.app-layout{
+    display: flex;
+    height: 100vh;
+}
+
+.sidebar{
+    width: 260px;
+    border-right: 1px solid #ccc;
+    padding: 16px;
+    overflow-y: auto
+}
+.sidebar-top{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px
+}
+
+.discover-section {
+    margin: 12px 0;
+}
+
+.chat-pane {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 16px;
+}
+
+.messages-wrap{
+    flex: 1;
+    overflow-y: auto;
+    margin-bottom: 12px
+}
+.messages-wrap ul{
+    list-style: none;
+    padding: 0
+}
+.messages-wrap li{
+    margin-bottom: 8px
+}
+
+.time {
+    font-size: 0.75rem;
+    color: #888;
+    margin-left: 6px;
+}
+
+.calendar-section{
+    margin: 12px 0;
+    border-top: 1px solid #ccc;
+    padding-top: 10px;
+}
+.cal-header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+    font-size: 0.85rem;
+    font-weight: bold;
+}
+
+.cal-grid{
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    text-align: center;
+    font-size: 0.75rem;
+    gap: 2px;
+}
+
+.cal-dow{
+    color: #888;
+    font-weight: 600;
+    padding: 2px 0;
+}
+
+.cal-day{
+    padding: 3px 2px;
+    border-radius: 50%;
+}
+
+.cal-day.today{
+    background: #2563eb;
+    color: white;
+    font-weight: bold;
+}
