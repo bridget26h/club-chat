@@ -15,17 +15,7 @@ function setup(props) {
 
     const { objects: allClubObjects } = useGraffitiDiscover(
         [DISCOVERY_CHANNEL],
-        { properties: {
-            value: {
-                required: ["activity","type","channel","title"],
-                properties: {
-                    activity: { const: "Create" },
-                    type: { const: "Club" },
-                    channel: { type: "string" },
-                    title: { type: "string" }
-                }
-            }
-        } }
+        { properties: { value: { required: ["activity","type","channel","title"], properties: { activity: { const: "Create" }, type: { const: "Club" }, channel: { type: "string" }, title: { type: "string" } } } } }
     );
     const clubTitle = computed(() => allClubObjects.value.find((c) => c.value.channel === clubId.value)?.value.title || "Club");
 
@@ -43,30 +33,53 @@ function setup(props) {
         messageObjects.value.toSorted((a, b) => a.value.published - b.value.published)
     );
 
+  const saveActorChannel = computed(() =>
+    session.value ? `${session.value.actor}/saved` : null
+  );
+  const { objects: savedObjects } = useGraffitiDiscover(
+    () => saveActorChannel.value ? [saveActorChannel.value] : [],
+    { properties: { value: { required: ["activity","messageUrl"], properties: { activity: { const: "Save" }, messageUrl: { type: "string" } } } } }
+  );
+  const savedUrls = computed(() => {
+    const s = new Set();
+    for (const obj of savedObjects.value) s.add(obj.value.messageUrl);
+    return s;
+  });
+
+  async function saveMessage(msg) {
+    if (!saveActorChannel.value) return;
+    await graffiti.post({
+        value: {
+            activity: "Save",
+            messageUrl: msg.url,
+            content: msg.value.content,
+            actor: msg.actor,
+            clubId: clubId.value,
+            clubTitle: clubTitle.value,
+            published: Date.now(),
+      },
+      channels: [saveActorChannel.value],
+    }, session.value);
+  }
+
     async function sendMessage() {
         if (!myMessage.value.trim() || !clubId.value) return;
         isSending.value = true;
         try {
-            await graffiti.post({ value: { content: myMessage.value.trim(), published: Date.now() }, channels: [clubId.value] }, session.value);
-            myMessage.value = "";
-        }
-        finally {
-            isSending.value = false;
+        await graffiti.post({ value: { content: myMessage.value.trim(), published: Date.now() }, channels: [clubId.value] }, session.value);
+        myMessage.value = "";
+        } finally {
+        isSending.value = false;
         }
     }
 
     async function deleteMessage(msg) {
         isDeleting.value.add(msg.url);
         try {
-            await graffiti.delete(msg, session.value);
+        await graffiti.delete(msg, session.value);
+        } finally {
+        isDeleting.value.delete(msg.url);
         }
-        finally {
-            isDeleting.value.delete(msg.url);
-        }
-    }
-
-    function formatTime(ts) {
-        return new Date(ts).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
     }
 
     return {
@@ -78,14 +91,14 @@ function setup(props) {
         areMessagesLoading,
         sendMessage,
         deleteMessage,
+        savedUrls,
+        saveMessage,
     };
 }
 
-    export default async () => ({
+export default async () => ({
     props: ["clubId"],
     setup,
-    components: {
-        MessageItem: await loadMessageComponent(),
-      },
+    components: { MessageItem: await loadMessageComponent() },
     template: await fetch(new URL("./index.html", import.meta.url)).then((r) => r.text()),
 });

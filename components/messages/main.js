@@ -8,8 +8,8 @@ function setup(props) {
 }
 
 export default async () => ({
-    props: ["actor", "content", "published", "isOwner", "deleting"],
-    emits: ["delete"],
+    props: ["actor", "content", "published", "isOwner", "deleting", "saved"],
+    emits: ["delete", "save"],
     setup,
     template: await fetch(new URL("./index.html", import.meta.url)).then((r) => r.text()),
 });

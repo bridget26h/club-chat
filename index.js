@@ -30,6 +30,16 @@ function setup() {
     const calendarMonthLabel = computed(() => calendarDate.value.toLocaleString("default", { month: "long", year: "numeric" }));
     const calendarBlanks = computed(() => Array(calendarDate.value.getDay()).fill(null));
     const calendarDays = computed(() => { const days = new Date(calendarDate.value.getFullYear(), calendarDate.value.getMonth() + 1, 0).getDate(); return Array.from({ length: days }, (_, i) => i + 1); });
+    const sidebarTab = ref("calendar");
+
+    const saveActorChannel = computed(() =>
+        session.value ? `${session.value.actor}/saved` : null
+    );
+
+    const { objects: savedItems } = useGraffitiDiscover(
+        () => saveActorChannel.value ? [saveActorChannel.value] : [],
+        { properties: { value: { required: ["activity","messageUrl","content","clubTitle"], properties: { activity: { const: "Save" }, messageUrl: { type: "string" }, content: { type: "string" }, clubTitle: { type: "string" } } } } }
+    );
 
     const { objects: allClubObjects } = useGraffitiDiscover(
         [DISCOVERY_CHANNEL],
@@ -79,8 +89,18 @@ function setup() {
     }
 
     return {
-        newClubName, isCreating, createClub, leaveClub, joinedClubs,
-        calendarOffset, calendarMonthLabel, calendarBlanks, calendarDays, todayDate,
+        newClubName,
+        isCreating,
+        createClub,
+        leaveClub,
+        joinedClubs,
+        calendarOffset,
+        calendarMonthLabel,
+        calendarBlanks,
+        calendarDays,
+        todayDate,
+        sidebarTab,
+        savedItems,
     };
 }
 

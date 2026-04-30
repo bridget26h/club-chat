@@ -1,26 +1,26 @@
 <div class="chat-pane">
     <h2>{{ clubTitle }}</h2>
-
     <div class="messages-wrap">
         <p v-if="areMessagesLoading"><em>Loading messages...</em></p>
         <ul v-else>
             <message-item
-                v-for="msg of sortedMessages"
-                :key="msg.url"
-                :actor="msg.actor"
-                :content="msg.value.content"
-                :published="msg.value.published"
-                :is-owner="msg.actor === $graffitiSession.value?.actor"
-                :deleting="isDeleting.has(msg.url)"
-                @delete="deleteMessage(msg)"></message-item>
+            v-for="msg of sortedMessages"
+            :key="msg.url"
+            :actor="msg.actor"
+            :content="msg.value.content"
+            :published="msg.value.published"
+            :is-owner="msg.actor === $graffitiSession.value?.actor"
+            :deleting="isDeleting.has(msg.url)"
+            :saved="savedUrls.has(msg.url)"
+            @delete="deleteMessage(msg)"
+            @save="saveMessage(msg)"></message-item>
             <li v-if="sortedMessages.length === 0">No messages yet.</li>
         </ul>
     </div>
-
     <form @submit.prevent="sendMessage">
         <input type="text" v-model="myMessage" placeholder="Type a message..." />
         <button type="submit" :disabled="!myMessage || isSending">
             {{ isSending ? 'Sending...' : 'Send' }}
         </button>
     </form>
-</div>
+  </div>

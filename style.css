@@ -84,3 +84,48 @@
     color: white;
     font-weight: bold;
 }
+
+.sidebar {
+    width: 260px;
+    height: 100vh;
+    border-right: 1px solid #ccc;
+    padding: 16px;
+    overflow-y: auto;
+}
+
+.sidebar-tabs {
+    display: flex;
+    border-top: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+    margin: 10px 0;
+}
+.sidebar-tabs button {
+    flex: 1;
+    background: none;
+    border: none;
+    padding: 8px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    border-bottom: 2px solid transparent;
+}
+.sidebar-tabs button.active {
+    border-bottom-color: #2563eb;
+    color: #2563eb;
+    font-weight: 600;
+}
+.saved-panel ul {
+    list-style: none;
+    padding: 0;
+}
+.saved-panel li {
+    margin-bottom: 10px;
+    font-size: 0.85rem;
+}
+.saved-club {
+    display: block;
+    font-size: 0.75rem;
+    color: #888;
+}
+.saved-content {
+    display: block;
+}

@@ -53,7 +53,11 @@
                     <div style="margin: 8px 0;">
                         <router-link to="/explore">Explore clubs</router-link>
                     </div>
-                    <div class="calendar-section">
+                    <div class="sidebar-tabs">
+                        <button :class="{ active: sidebarTab === 'calendar' }" @click="sidebarTab = 'calendar'">Calendar</button>
+                        <button :class="{ active: sidebarTab === 'saved' }" @click="sidebarTab = 'saved'">Saved</button>
+                    </div>
+                    <div v-if="sidebarTab === 'calendar'" class="calendar-section">
                         <div class="cal-header">
                             <button @click="calendarOffset--">&#8249;</button>
                             <span>{{ calendarMonthLabel }}</span>
@@ -65,7 +69,17 @@
                             <span v-for="day in calendarDays" class="cal-day" :class="{ today: day === todayDate && calendarOffset === 0 }">{{ day }}</span>
                         </div>
                     </div>
-                </aside>
+
+                    <div v-if="sidebarTab === 'saved'" class="saved-panel">
+                        <ul>
+                            <li v-for="item of savedItems" :key="item.url">
+                                <span class="saved-club">{{ item.value.clubTitle }}</span>
+                                <span class="saved-content">{{ item.value.content }}</span>
+                            </li>
+                            <li v-if="savedItems.length === 0">No saved messages yet.</li>
+                        </ul>
+                    </div>
+                    </aside>
                 <main class="main-pane">
                     <router-view></router-view>
                 </main>
