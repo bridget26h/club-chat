@@ -1,0 +1,12 @@
+<div class="message-item">
+    <strong><graffiti-actor-to-handle :actor="actor"></graffiti-actor-to-handle></strong>:
+    {{ content }}
+    <span class="time">
+        {{ formattedTime }}
+    </span>
+    <button
+        v-if="isOwner"
+        @click="$emit('delete')"
+        :disabled="deleting"
+    >{{ deleting ? 'Deleting...' : 'Delete' }}</button>
+</div>

@@ -3,6 +3,11 @@ import { useGraffiti, useGraffitiSession, useGraffitiDiscover } from "@graffiti-
 
 const DISCOVERY_CHANNEL = "designftw-26";
 
+async function loadMessageComponent() {
+    const factory = await import("../components/messages/main.js").then((m) => m.default());
+    return factory;
+}
+
 function setup(props) {
     const graffiti = useGraffiti();
     const session = useGraffitiSession();
@@ -73,12 +78,14 @@ function setup(props) {
         areMessagesLoading,
         sendMessage,
         deleteMessage,
-        formatTime,
     };
 }
 
     export default async () => ({
     props: ["clubId"],
     setup,
+    components: {
+        MessageItem: await loadMessageComponent(),
+      },
     template: await fetch(new URL("./index.html", import.meta.url)).then((r) => r.text()),
 });
