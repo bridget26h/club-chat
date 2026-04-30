@@ -84,12 +84,6 @@ function setup(props) {
         }
     }
 
-    function confirmLeave() {
-        if (confirm(`Are you sure you want to leave ${clubTitle.value}?`)) {
-            leaveCurrentClub();
-        }
-    }
-
     const joinActorChannel = computed(() =>
         session.value ? `${session.value.actor}/clubs` : null
     );
