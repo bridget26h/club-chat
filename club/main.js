@@ -42,19 +42,21 @@ function setup(props) {
         if (!myMessage.value.trim() || !clubId.value) return;
         isSending.value = true;
         try {
-        await graffiti.post({ value: { content: myMessage.value.trim(), published: Date.now() }, channels: [clubId.value] }, session.value);
-        myMessage.value = "";
-        } finally {
-        isSending.value = false;
+            await graffiti.post({ value: { content: myMessage.value.trim(), published: Date.now() }, channels: [clubId.value] }, session.value);
+            myMessage.value = "";
+        }
+        finally {
+            isSending.value = false;
         }
     }
 
     async function deleteMessage(msg) {
         isDeleting.value.add(msg.url);
         try {
-        await graffiti.delete(msg, session.value);
-        } finally {
-        isDeleting.value.delete(msg.url);
+            await graffiti.delete(msg, session.value);
+        }
+        finally {
+            isDeleting.value.delete(msg.url);
         }
     }
 
@@ -62,7 +64,17 @@ function setup(props) {
         return new Date(ts).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
     }
 
-    return { clubTitle, myMessage, isSending, isDeleting, sortedMessages, areMessagesLoading, sendMessage, deleteMessage, formatTime };
+    return {
+        clubTitle,
+        myMessage,
+        isSending,
+        isDeleting,
+        sortedMessages,
+        areMessagesLoading,
+        sendMessage,
+        deleteMessage,
+        formatTime,
+    };
 }
 
     export default async () => ({
