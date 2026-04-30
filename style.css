@@ -1,141 +1,335 @@
-.app-layout{
-    display: flex;
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: #fff;
+    color: #1a1a1a;
+}
+
+.login-screen {
     height: 100vh;
-}
-
-.sidebar{
-    width: 260px;
-    border-right: 1px solid #ccc;
-    padding: 16px;
-    overflow-y: auto
-}
-.sidebar-top{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 12px
-}
-
-.discover-section {
-    margin: 12px 0;
-}
-
-.chat-pane {
-    flex: 1;
     display: flex;
     flex-direction: column;
-    padding: 16px;
-}
-
-.messages-wrap{
-    flex: 1;
-    overflow-y: auto;
-    margin-bottom: 12px
-}
-.messages-wrap ul{
-    list-style: none;
-    padding: 0
-}
-.messages-wrap li{
-    margin-bottom: 8px
-}
-
-.time {
-    font-size: 0.75rem;
-    color: #888;
-    margin-left: 6px;
-}
-
-.calendar-section{
-    margin: 12px 0;
-    border-top: 1px solid #ccc;
-    padding-top: 10px;
-}
-.cal-header{
-    display: flex;
-    justify-content: space-between;
     align-items: center;
-    margin-bottom: 6px;
-    font-size: 0.85rem;
-    font-weight: bold;
+    justify-content: center;
+    gap: 16px;
 }
 
-.cal-grid{
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    text-align: center;
-    font-size: 0.75rem;
-    gap: 2px;
-}
-
-.cal-dow{
-    color: #888;
-    font-weight: 600;
-    padding: 2px 0;
-}
-
-.cal-day{
-    padding: 3px 2px;
-    border-radius: 50%;
-}
-
-.cal-day.today{
-    background: #2563eb;
-    color: white;
-    font-weight: bold;
+.app-layout {
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
 }
 
 .sidebar {
-    width: 260px;
+    width: 340px;
+    min-width: 340px;
     height: 100vh;
-    border-right: 1px solid #ccc;
-    padding: 16px;
+    border-right: 1px solid #e5e7eb;
+    padding: 20px 16px;
     overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    background: #fff;
 }
+.sidebar-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.sidebar-logo {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #1a1a1a;
+}
+
+.btn-logout {
+    font-size: 0.78rem;
+    background: none;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    padding: 4px 10px;
+    cursor: pointer;
+    color: #6b7280;
+}
+.btn-logout:hover { background: #f3f4f6; }
+
+.search-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid #d1d5db;
+    border-radius: 20px;
+    padding: 7px 14px;
+    background: #f9fafb;
+}
+.search-bar input {
+    border: none;
+    background: none;
+    outline: none;
+    font-size: 0.85rem;
+    flex: 1;
+    color: #374151;
+}
+.search-bar input::placeholder { color: #9ca3af; }
+.search-icon { color: #9ca3af; font-size: 0.9rem; }
+
+.explore-link {
+    font-size: 0.8rem;
+    color: #2563eb;
+    text-decoration: none;
+    padding-left: 4px;
+}
+.explore-link:hover { text-decoration: underline; }
+
+.club-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    max-height: 220px;
+    overflow-y: scroll;
+}
+
+.club-grid::-webkit-scrollbar { width: 6px; }
+.club-grid::-webkit-scrollbar-track { background: #f3f4f6; border-radius: 3px; }
+.club-grid::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 3px; }
+.club-grid::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
+
+.club-card {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 12px;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    text-decoration: none;
+    color: #1a1a1a;
+    background: #fff;
+    transition: border-color 0.15s;
+    min-height: 90px;
+}
+.club-card:hover { border-color: #93c5fd; }
+.club-card.active {
+    border-color: #2563eb;
+    background: #eff6ff;
+}
+.club-card-icon {
+    font-size: 1.1rem;
+    color: #9ca3af;
+    background: #f3f4f6;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.club-card-name {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #111827;
+}
+.club-card-preview {
+    font-size: 0.75rem;
+    color: #6b7280;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.club-grid-empty {
+    grid-column: span 2;
+    font-size: 0.82rem;
+    color: #9ca3af;
+    padding: 8px 0;
+}
+
+.create-club-form {
+    display: flex;
+    gap: 6px;
+}
+.create-club-form input {
+    flex: 1;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    padding: 6px 10px;
+    font-size: 0.82rem;
+    outline: none;
+}
+.create-club-form input:focus { border-color: #2563eb; }
+
+.btn-primary {
+    background: #2563eb;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 18px;
+    font-size: 0.88rem;
+    cursor: pointer;
+}
+.btn-primary:hover { background: #1d4ed8; }
+.btn-primary:disabled { background: #93c5fd; cursor: not-allowed; }
+.btn-primary.small { padding: 6px 12px; font-size: 0.8rem; }
 
 .sidebar-tabs {
     display: flex;
-    border-top: 1px solid #ccc;
-    border-bottom: 1px solid #ccc;
-    margin: 10px 0;
+    border-bottom: 1px solid #e5e7eb;
 }
 .sidebar-tabs button {
     flex: 1;
     background: none;
     border: none;
+    border-bottom: 2px solid transparent;
     padding: 8px;
     cursor: pointer;
     font-size: 0.85rem;
-    border-bottom: 2px solid transparent;
+    color: #6b7280;
+    margin-bottom: -1px;
 }
 .sidebar-tabs button.active {
     border-bottom-color: #2563eb;
     color: #2563eb;
     font-weight: 600;
 }
-.saved-panel ul {
-    list-style: none;
-    padding: 0;
-}
-.saved-panel li {
-    margin-bottom: 10px;
-    font-size: 0.85rem;
-}
-.saved-club {
-    display: block;
-    font-size: 0.75rem;
-    color: #888;
-}
-.saved-content {
-    display: block;
+.calendar-section {
+    padding-top: 8px;
 }
 
-.saved-club {
-    display: block;
-    font-size: 0.75rem;
+.cal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    font-size: 0.85rem;
+    font-weight: 700;
+}
+.cal-header button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    color: #6b7280;
+    padding: 2px 6px;
+}
+.cal-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    text-align: center;
+    font-size: 0.72rem;
+    gap: 2px;
+}
+.cal-dow {
+    color: #9ca3af;
+    font-weight: 600;
+    padding: 3px 0;
+}
+.cal-day {
+    padding: 4px 2px;
+    border-radius: 50%;
+    cursor: default;
+    color: #374151;
+}
+.cal-day.today {
+    background: #2563eb;
+    color: #fff;
+    font-weight: 700;
+}
+
+.saved-title {
+    font-size: 0.9rem;
+    font-weight: 700;
+    margin: 8px 0 6px;
+}
+.saved-panel ul { list-style: none; padding: 0; }
+.saved-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 8px;
+    border-radius: 8px;
+    background: #f9fafb;
+    margin-bottom: 8px;
+}
+.saved-item-icon {
+    font-size: 1rem;
     color: #2563eb;
+    background: #eff6ff;
+    width: 30px;
+    height: 30px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+.saved-item-body { flex: 1; min-width: 0; }
+.saved-content {
+    display: block;
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: #111827;
     text-decoration: none;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
-.saved-club:hover {
-    text-decoration: underline;
+.saved-content:hover { text-decoration: underline; }
+.saved-meta {
+    display: block;
+    font-size: 0.72rem;
+    color: #9ca3af;
+    margin-top: 2px;
 }
+.btn-remove {
+    background: none;
+    border: none;
+    color: #9ca3af;
+    cursor: pointer;
+    font-size: 0.75rem;
+    padding: 2px;
+    flex-shrink: 0;
+}
+.btn-remove:hover { color: #ef4444; }
+.saved-empty { font-size: 0.82rem; color: #9ca3af; padding: 8px 0; }
+
+.main-pane {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.chat-pane {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+.messages-wrap {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px 24px;
+}
+.messages-wrap ul { list-style: none; padding: 0; }
+.messages-wrap li { margin-bottom: 12px; }
+.time { font-size: 0.72rem; color: #9ca3af; margin-left: 6px; }
+
+.chat-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 24px;
+    border-bottom: 1px solid #e5e7eb;
+}
+.chat-header h2 { margin: 0; font-size: 1rem; font-weight: 600; }
+.btn-leave {
+    font-size: 0.78rem;
+    color: #ef4444;
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 6px;
+    padding: 4px 12px;
+    cursor: pointer;
+}
+.btn-leave:hover { background: #fee2e2; }

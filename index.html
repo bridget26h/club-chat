@@ -18,45 +18,58 @@
         <script src="index.js" type="module"></script>
         <link rel="stylesheet" href="style.css" />
     </head>
-
     <body>
         <div id="app">Loading...</div>
         <template id="template">
-            <div v-if="!$graffitiSession.value">
+            <div v-if="!$graffitiSession.value" class="login-screen">
                 <h1>ClubRoom</h1>
-                <button @click="$graffiti.login()">Log In</button>
+                <button class="btn-primary" @click="$graffiti.login()">Log In</button>
             </div>
+
             <div v-else class="app-layout">
                 <aside class="sidebar">
+
                     <div class="sidebar-top">
-                        <h2>ClubRoom</h2>
-                        <button @click="$graffiti.logout($graffitiSession.value)">Log Out</button>
+                        <span class="sidebar-logo">ClubRoom</span>
+                        <button class="btn-logout" @click="$graffiti.logout($graffitiSession.value)">Log Out</button>
                     </div>
 
-                    <form @submit.prevent="createClub">
+                    <div class="search-bar">
+                        <span class="search-icon">&#9906;</span>
+                        <input type="text" v-model="clubSearch" placeholder="Search your clubs" />
+                    </div>
+
+                    <router-link to="/explore" class="explore-link">Explore all clubs</router-link>
+
+                    <div class="club-grid">
+                        <router-link
+                            v-for="club of filteredJoinedClubs"
+                            :key="club.channel"
+                            :to="`/club/${club.channel}`"
+                            class="club-card"
+                            :class="{ active: $route.params.clubId === club.channel }"
+                        >
+                            <div class="club-card-icon">&#128172;</div>
+                            <div class="club-card-name">{{ club.title }}</div>
+                            <div class="club-card-preview">{{ club.lastMessage || '' }}</div>
+                        </router-link>
+                        <div v-if="filteredJoinedClubs.length === 0" class="club-grid-empty">
+                            No clubs yet.
+                        </div>
+                    </div>
+
+                    <form class="create-club-form" @submit.prevent="createClub">
                         <input type="text" v-model="newClubName" placeholder="New club name" />
-                        <button type="submit" :disabled="!newClubName || isCreating">
-                            {{ isCreating ? 'Creating...' : 'Create Club' }}
+                        <button type="submit" class="btn-primary small" :disabled="!newClubName || isCreating">
+                            {{ isCreating ? '...' : 'Create' }}
                         </button>
                     </form>
 
-                    <h3>Your Clubs</h3>
-                    <ul>
-                        <li v-for="club of joinedClubs" :key="club.channel">
-                            <router-link :to="`/club/${club.channel}`">{{ club.title }}</router-link>
-                            <button @click="leaveClub(club.channel)">Leave</button>
-                        </li>
-                        <li v-if="joinedClubs.length === 0">
-                            No clubs yet.
-                        </li>
-                    </ul>
-                    <div style="margin: 8px 0;">
-                        <router-link to="/explore">Explore clubs</router-link>
-                    </div>
                     <div class="sidebar-tabs">
-                        <button :class="{ active: sidebarTab === 'calendar' }" @click="sidebarTab = 'calendar'">Calendar</button>
+                        <button :class="{ active: sidebarTab === 'calendar' }" @click="sidebarTab = 'calendar'">Date</button>
                         <button :class="{ active: sidebarTab === 'saved' }" @click="sidebarTab = 'saved'">Saved</button>
                     </div>
+
                     <div v-if="sidebarTab === 'calendar'" class="calendar-section">
                         <div class="cal-header">
                             <button @click="calendarOffset--">&#8249;</button>
@@ -64,23 +77,28 @@
                             <button @click="calendarOffset++">&#8250;</button>
                         </div>
                         <div class="cal-grid">
-                            <span v-for="d in ['Su','Mo','Tu','We','Th','Fr','Sa']" class="cal-dow">{{ d }}</span>
+                            <span v-for="d in ['SUN','MON','TUE','WED','THU','FRI','SAT']" class="cal-dow">{{ d }}</span>
                             <span v-for="blank in calendarBlanks" class="cal-blank"></span>
                             <span v-for="day in calendarDays" class="cal-day" :class="{ today: day === todayDate && calendarOffset === 0 }">{{ day }}</span>
                         </div>
                     </div>
 
                     <div v-if="sidebarTab === 'saved'" class="saved-panel">
+                        <p class="saved-title">Saved Items</p>
                         <ul>
-                            <li v-for="item of savedItems" :key="item.url">
-                                <router-link :to="`/club/${item.value.clubId}`" class="saved-club">{{ item.value.clubTitle }}</router-link>
-                                <span class="saved-content">{{ item.value.content }}</span>
-                                <button @click="unsaveItem(item)">Remove</button>
+                            <li v-for="item of savedItems" :key="item.url" class="saved-item">
+                                <div class="saved-item-icon">&#128279;</div>
+                                <div class="saved-item-body">
+                                    <router-link :to="`/club/${item.value.clubId}`" class="saved-content">{{ item.value.content }}</router-link>
+                                    <span class="saved-meta">From {{ item.value.clubTitle }}</span>
+                                </div>
+                                <button class="btn-remove" @click="unsaveItem(item)">✕</button>
                             </li>
-                            <li v-if="savedItems.length === 0">No saved messages yet.</li>
+                            <li v-if="savedItems.length === 0" class="saved-empty">No saved messages yet.</li>
                         </ul>
                     </div>
-                    </aside>
+                </aside>
+
                 <main class="main-pane">
                     <router-view></router-view>
                 </main>

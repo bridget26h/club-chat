@@ -1,5 +1,6 @@
 import { ref, computed } from "vue";
 import { useGraffiti, useGraffitiSession, useGraffitiDiscover } from "@graffiti-garden/wrapper-vue";
+import { useRouter } from "vue-router";
 
 const DISCOVERY_CHANNEL = "designftw-26";
 
@@ -9,6 +10,7 @@ async function loadMessageComponent() {
 }
 
 function setup(props) {
+    const router = useRouter();
     const graffiti = useGraffiti();
     const session = useGraffitiSession();
     const clubId = computed(() => props.clubId);
@@ -82,6 +84,33 @@ function setup(props) {
         }
     }
 
+    function confirmLeave() {
+        if (confirm(`Are you sure you want to leave ${clubTitle.value}?`)) {
+            leaveCurrentClub();
+        }
+    }
+
+    const joinActorChannel = computed(() =>
+        session.value ? `${session.value.actor}/clubs` : null
+    );
+
+    const { objects: joinObjects } = useGraffitiDiscover(
+        () => joinActorChannel.value ? [joinActorChannel.value] : [],
+        { properties: { value: { required: ["activity","target"], properties: { activity: { const: "Join" }, target: { type: "string" } } } } }
+    );
+
+    async function leaveCurrentClub() {
+        const joinObj = joinObjects.value.find(o => o.value.target === clubId.value);
+        if (!joinObj) return;
+        await graffiti.delete(joinObj, session.value);
+        router.push("/");
+    }
+    function confirmLeave() {
+        if (confirm(`Are you sure you want to leave ${clubTitle.value}?`)) {
+            leaveCurrentClub();
+        }
+    }
+
     return {
         clubTitle,
         myMessage,
@@ -93,7 +122,9 @@ function setup(props) {
         deleteMessage,
         savedUrls,
         saveMessage,
+        confirmLeave,
     };
+
 }
 
 export default async () => ({

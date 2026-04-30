@@ -1,7 +1,11 @@
 <div class="chat-pane">
-    <h2>{{ clubTitle }}</h2>
+    <div class="chat-header">
+      <h2>{{ clubTitle }}</h2>
+      <button class="btn-leave" @click="confirmLeave">Leave Club</button>
+    </div>
+
     <div class="messages-wrap">
-        <p v-if="areMessagesLoading"><em>Loading messages...</em></p>
+      <p v-if="areMessagesLoading"><em>Loading messages...</em></p>
         <ul v-else>
             <message-item
             v-for="msg of sortedMessages"
@@ -17,6 +21,7 @@
             <li v-if="sortedMessages.length === 0">No messages yet.</li>
         </ul>
     </div>
+
     <form @submit.prevent="sendMessage">
         <input type="text" v-model="myMessage" placeholder="Type a message..." />
         <button type="submit" :disabled="!myMessage || isSending">

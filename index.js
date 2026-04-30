@@ -22,6 +22,7 @@ function setup() {
     const graffiti = useGraffiti();
     const session = useGraffitiSession();
     const newClubName = ref("");
+    const clubSearch = ref("");
     const isCreating = ref(false);
 
     const calendarOffset = ref(0);
@@ -66,9 +67,14 @@ function setup() {
         const channelToTitle = new Map();
         for (const c of allClubObjects.value) channelToTitle.set(c.value.channel, c.value.title);
         return joinObjects.value.map((obj) => ({
-        channel: obj.value.target,
-        title: obj.value.title || channelToTitle.get(obj.value.target) || "Unknown Club",
+            channel: obj.value.target,
+            title: obj.value.title || channelToTitle.get(obj.value.target) || "Unknown Club",
         }));
+    });
+
+    const filteredJoinedClubs = computed(() => {
+        const q = clubSearch.value.toLowerCase();
+        return q ? joinedClubs.value.filter(c => c.title.toLowerCase().includes(q)) : joinedClubs.value;
     });
 
     async function createClub() {
@@ -106,6 +112,8 @@ function setup() {
         sidebarTab,
         savedItems,
         unsaveItem,
+        clubSearch,
+        filteredJoinedClubs,
     };
 }
 
