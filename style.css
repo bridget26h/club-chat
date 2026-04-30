@@ -129,3 +129,13 @@
 .saved-content {
     display: block;
 }
+
+.saved-club {
+    display: block;
+    font-size: 0.75rem;
+    color: #2563eb;
+    text-decoration: none;
+}
+.saved-club:hover {
+    text-decoration: underline;
+}

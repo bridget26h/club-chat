@@ -73,8 +73,9 @@
                     <div v-if="sidebarTab === 'saved'" class="saved-panel">
                         <ul>
                             <li v-for="item of savedItems" :key="item.url">
-                                <span class="saved-club">{{ item.value.clubTitle }}</span>
+                                <router-link :to="`/club/${item.value.clubId}`" class="saved-club">{{ item.value.clubTitle }}</router-link>
                                 <span class="saved-content">{{ item.value.content }}</span>
+                                <button @click="unsaveItem(item)">Remove</button>
                             </li>
                             <li v-if="savedItems.length === 0">No saved messages yet.</li>
                         </ul>

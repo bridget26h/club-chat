@@ -41,6 +41,10 @@ function setup() {
         { properties: { value: { required: ["activity","messageUrl","content","clubTitle"], properties: { activity: { const: "Save" }, messageUrl: { type: "string" }, content: { type: "string" }, clubTitle: { type: "string" } } } } }
     );
 
+    async function unsaveItem(item) {
+        await graffiti.delete(item, session.value);
+    }
+
     const { objects: allClubObjects } = useGraffitiDiscover(
         [DISCOVERY_CHANNEL],
         { properties: { value: { required: ["activity","type","channel","title","published"], properties: { activity: { const: "Create" }, type: { const: "Club" }, channel: { type: "string" }, title: { type: "string" }, published: { type: "number" } } } } }
@@ -101,6 +105,7 @@ function setup() {
         todayDate,
         sidebarTab,
         savedItems,
+        unsaveItem,
     };
 }
 
