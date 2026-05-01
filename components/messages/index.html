@@ -1,15 +1,12 @@
-<div class="message-item">
-    <strong><graffiti-actor-to-handle :actor="actor"></graffiti-actor-to-handle></strong>:
-    {{ content }}
-    <span class="time">{{ formattedTime }}</span>
-    <button
-        v-if="isOwner"
-        @click="$emit('delete')"
-        :disabled="deleting"
-    >
-        {{ deleting ? 'Deleting...' : 'Delete' }}
-    </button>
-    <button @click="$emit('save')" :disabled="saved">
-        {{ saved ? 'Saved' : 'Save' }}
-    </button>
+<div class="message-row" :class="{ mine: isOwner }">
+    <div class="bubble">{{ content }}</div>
+    <div class="message-meta">
+        <span class="time">{{ formattedTime }}</span>
+        <button v-if="isOwner" class="btn-action" @click="$emit('delete')" :disabled="deleting">
+            {{ deleting ? '…' : 'Delete' }}
+        </button>
+        <button class="btn-action" @click="$emit('save')" :disabled="saved">
+            {{ saved ? 'Saved' : 'Save' }}
+        </button>
+    </div>
   </div>
