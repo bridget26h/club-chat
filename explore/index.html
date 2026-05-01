@@ -1,13 +1,26 @@
-<h2>Explore Clubs</h2>
+<div class="explore-page">
+    <h2>Explore Clubs</h2>
+    <p class="explore-subtitle">Find and join clubs to start chatting.</p>
 
-<input type="text" v-model="searchQuery" placeholder="Search clubs..." />
+    <div class="search-bar" style="margin-bottom: 16px;">
+        <span class="search-icon">&#9906;</span>
+        <input type="text" v-model="searchQuery" placeholder="Search clubs..." />
+    </div>
 
-<ul>
-    <li v-for="club of filteredAllClubs" :key="club.url">
-        {{ club.value.title }}
-        <button v-if="!joinedChannels.has(club.value.channel)" @click="joinClub(club)">Join</button>
-        <span v-else>(joined)</span>
-    </li>
-    <li v-if="filteredAllClubs.length === 0 && searchQuery">No clubs found.</li>
-    <li v-if="!searchQuery && filteredAllClubs.length === 0">No clubs exist yet.</li>
-</ul>
+    <ul class="explore-list">
+        <li v-for="club of filteredAllClubs" :key="club.url" class="explore-item">
+            <div class="explore-item-icon">&#128172;</div>
+            <div class="explore-item-info">
+                <span class="explore-item-name">{{ club.value.title }}</span>
+            </div>
+            <button
+                v-if="!joinedChannels.has(club.value.channel)"
+                class="btn-join"
+                @click="joinClub(club)"
+            >Join</button>
+            <span v-else class="joined-badge">Joined</span>
+        </li>
+        <li v-if="filteredAllClubs.length === 0 && searchQuery" class="explore-empty">No clubs found.</li>
+        <li v-if="!searchQuery && filteredAllClubs.length === 0" class="explore-empty">No clubs exist yet.</li>
+    </ul>
+</div>

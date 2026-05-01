@@ -451,3 +451,56 @@ body {
 }
 .btn-action:hover { color: #374151; }
 .btn-action:disabled { opacity: 0.5; cursor: default; }
+
+
+.explore-page {
+    padding: 24px;
+    height: 100%;
+    overflow-y: auto;
+}
+.explore-page h2 { font-size: 1.2rem; font-weight: 700; margin-bottom: 4px; }
+.explore-subtitle { font-size: 0.85rem; color: #6b7280; margin-bottom: 16px; }
+
+.explore-list { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.explore-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    background: #fff;
+}
+.explore-item-icon {
+    font-size: 1.1rem;
+    color: #9ca3af;
+    background: #f3f4f6;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+.explore-item-info { flex: 1; }
+.explore-item-name { font-size: 0.9rem; font-weight: 600; color: #111827; }
+.btn-join {
+    background: #eff6ff;
+    color: #2563eb;
+    border: 1px solid #bfdbfe;
+    border-radius: 6px;
+    padding: 5px 14px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+.btn-join:hover { background: #dbeafe; }
+.joined-badge {
+    font-size: 0.78rem;
+    color: #6b7280;
+    background: #f3f4f6;
+    border-radius: 6px;
+    padding: 5px 12px;
+}
+.explore-empty { font-size: 0.85rem; color: #9ca3af; padding: 12px 0; }
