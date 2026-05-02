@@ -74,7 +74,14 @@
                         <div v-if="sidebarTab === 'calendar'" class="calendar-section">
                             <div class="cal-header">
                                 <button @click="calendarOffset--">&#8249;</button>
-                                <span>{{ calendarMonthLabel }}</span>
+                                <div class="cal-header-center">
+                                    <select v-model="calendarMonthSelect" class="cal-select">
+                                        <option v-for="(m, i) in calendarMonths" :key="i" :value="i">{{ m }}</option>
+                                    </select>
+                                    <select v-model="calendarYearSelect" class="cal-select">
+                                        <option v-for="y in calendarYears" :key="y" :value="y">{{ y }}</option>
+                                    </select>
+                                </div>
                                 <button @click="calendarOffset++">&#8250;</button>
                             </div>
                             <div class="cal-grid">

@@ -210,7 +210,7 @@ body {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 8px;
-    font-size: 0.85rem;
+    font-size: 1rem;
     font-weight: 700;
 }
 .cal-header button {
@@ -554,3 +554,31 @@ body {
     max-width: 280px;
     line-height: 1.6;
 }
+
+.cal-header-center {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+}
+.cal-select {
+    border: none;
+    background: none;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    outline: none;
+    color: #111827;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    width: auto;
+}
+
+.cal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 10px 0;
+    font-size: 1rem;
+    font-weight: 700;
+}.cal-select:hover { color: #2563eb; }

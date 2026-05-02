@@ -24,14 +24,46 @@ function setup() {
     const newClubName = ref("");
     const clubSearch = ref("");
     const isCreating = ref(false);
+    const sidebarTab = ref("calendar");
 
     const calendarOffset = ref(0);
     const todayDate = new Date().getDate();
-    const calendarDate = computed(() => { const d = new Date(); d.setDate(1); d.setMonth(d.getMonth() + calendarOffset.value); return d; });
-    const calendarMonthLabel = computed(() => calendarDate.value.toLocaleString("default", { month: "long", year: "numeric" }));
+    const today = new Date();
+    const calendarDate = computed(() => {
+        const d = new Date();
+        d.setDate(1);
+        d.setMonth(d.getMonth() + calendarOffset.value);
+        return d;
+    });
+
+    const calendarMonthLabel = computed(() =>
+        calendarDate.value.toLocaleString("default", { month: "long", year: "numeric" })
+    );
     const calendarBlanks = computed(() => Array(calendarDate.value.getDay()).fill(null));
-    const calendarDays = computed(() => { const days = new Date(calendarDate.value.getFullYear(), calendarDate.value.getMonth() + 1, 0).getDate(); return Array.from({ length: days }, (_, i) => i + 1); });
-    const sidebarTab = ref("calendar");
+    const calendarDays = computed(() => {
+        const days = new Date(calendarDate.value.getFullYear(), calendarDate.value.getMonth() + 1, 0).getDate();
+        return Array.from({ length: days }, (_, i) => i + 1);
+    });
+
+    const calendarMonths = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+    const calendarYears = Array.from({ length: 20 }, (_, i) => today.getFullYear() - 5 + i);
+
+    const calendarMonthSelect = computed({
+        get: () => calendarDate.value.getMonth(),
+        set: (val) => {
+            const diff = val - today.getMonth();
+            const yearDiff = (calendarDate.value.getFullYear() - today.getFullYear()) * 12;
+            calendarOffset.value = yearDiff + diff;
+        }
+    });
+
+    const calendarYearSelect = computed({
+        get: () => calendarDate.value.getFullYear(),
+        set: (val) => {
+            const yearDiff = val - today.getFullYear();
+            calendarOffset.value = yearDiff * 12 + (calendarDate.value.getMonth() - today.getMonth());
+        }
+    });
 
     const saveActorChannel = computed(() =>
         session.value ? `${session.value.actor}/saved` : null
@@ -108,6 +140,10 @@ function setup() {
         calendarMonthLabel,
         calendarBlanks,
         calendarDays,
+        calendarMonthSelect,
+        calendarYearSelect,
+        calendarMonths,
+        calendarYears,
         todayDate,
         sidebarTab,
         savedItems,
