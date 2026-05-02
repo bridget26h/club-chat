@@ -95,7 +95,7 @@ body {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 8px;
-    max-height: 220px;
+    height: 220px;
     overflow-y: scroll;
     flex-shrink: 0;
 }
