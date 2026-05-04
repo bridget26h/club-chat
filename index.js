@@ -73,8 +73,21 @@ function setup() {
         { properties: { value: { required: ["activity","messageUrl","content","clubTitle"], properties: { activity: { const: "Save" }, messageUrl: { type: "string" }, content: { type: "string" }, clubTitle: { type: "string" } } } } }
     );
 
+    const savedItemsWithIcon = computed(() => {
+        const channelToIcon = new Map();
+        for (const c of allClubObjects.value) {
+            channelToIcon.set(c.value.channel, c.value.icon || null);
+        }
+        return savedItems.value.map(item => ({
+            ...item,
+            clubIcon: channelToIcon.get(item.value.clubId) || null,
+        }));
+    });
+
     async function unsaveItem(item) {
-        await graffiti.delete(item, session.value);
+        if (confirm("Unsave this message?")) {
+            await graffiti.delete(item, session.value);
+        }
     }
 
     const { objects: allClubObjects } = useGraffitiDiscover(
@@ -138,6 +151,7 @@ function setup() {
         unsaveItem,
         clubSearch,
         filteredJoinedClubs,
+        savedItemsWithIcon,
     };
 }
 

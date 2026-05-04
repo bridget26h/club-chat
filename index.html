@@ -96,20 +96,32 @@
                                 <span v-for="day in calendarDays" class="cal-day" :class="{ today: day === todayDate && calendarOffset === 0 }">{{ day }}</span>
                             </div>
                         </div>
-
                         <div v-if="sidebarTab === 'saved'" class="saved-panel">
                             <p class="saved-title">Saved Items</p>
-                            <ul>
-                                <li v-for="item of savedItems" :key="item.url" class="saved-item">
-                                    <div class="saved-item-icon">&#128279;</div>
-                                    <div class="saved-item-body">
-                                        <router-link :to="`/club/${item.value.clubId}`" class="saved-content">{{ item.value.content }}</router-link>
-                                        <span class="saved-meta">From {{ item.value.clubTitle }}</span>
-                                    </div>
-                                    <button class="btn-remove" @click="unsaveItem(item)">✕</button>
-                                </li>
-                                <li v-if="savedItems.length === 0" class="saved-empty">No saved messages yet.</li>
-                            </ul>
+                            <div class="saved-scroll">
+                                <ul>
+                                    <li v-for="item of savedItemsWithIcon" :key="item.url" class="saved-item">
+                                        <div class="saved-item-icon">
+                                            <graffiti-get-media
+                                                v-if="item.clubIcon"
+                                                :url="item.clubIcon"
+                                                :accept="{ types: ['image/*'] }"
+                                                v-slot="{ media }"
+                                            >
+                                                <img v-if="media" :src="media.dataUrl" class="saved-icon-img" />
+                                                <span v-else>&#128172;</span>
+                                            </graffiti-get-media>
+                                            <span v-else>&#128172;</span>
+                                        </div>
+                                        <div class="saved-item-body">
+                                            <span class="saved-meta">{{ item.value.clubTitle }}</span>
+                                            <router-link :to="`/club/${item.value.clubId}`" class="saved-content">{{ item.value.content }}</router-link>
+                                        </div>
+                                        <button class="btn-remove" @click="unsaveItem(item)">✕</button>
+                                    </li>
+                                    <li v-if="savedItems.length === 0" class="saved-empty">No saved messages yet.</li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 </aside>
