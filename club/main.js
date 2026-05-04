@@ -53,6 +53,15 @@ function setup(props) {
 
     async function saveEdit() {
         if (!clubObject.value) return;
+
+        const existingNames = allClubObjects.value
+            .filter(c => c.value.channel !== clubId.value)
+            .map(c => c.value.title.toLowerCase().trim());
+        if (existingNames.includes(editName.value.toLowerCase().trim())) {
+            alert(`A club named "${editName.value.trim()}" already exists. Please choose a different name.`);
+            return;
+        }
+
         isSavingEdit.value = true;
         try {
             const newValue = {

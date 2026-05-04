@@ -19,6 +19,11 @@ function setup() {
         session.value ? `${session.value.actor}/clubs` : null
     );
 
+    const { objects: allClubObjects } = useGraffitiDiscover(
+        [DISCOVERY_CHANNEL],
+        { properties: { value: { required: ["activity","type","channel","title"], properties: { activity: { const: "Create" }, type: { const: "Club" }, channel: { type: "string" }, title: { type: "string" } } } } }
+    );
+
     function handleFileSelect(event) {
         const file = event.target.files[0];
         if (file) {
@@ -29,6 +34,12 @@ function setup() {
 
     async function createClub() {
         if (!newClubName.value.trim() || !newClubDescription.value.trim()) return;
+
+        const existingNames = allClubObjects.value.map(c => c.value.title.toLowerCase().trim());
+        if (existingNames.includes(newClubName.value.toLowerCase().trim())) {
+            alert(`A club named "${newClubName.value.trim()}" already exists. Please choose a different name.`);
+            return;
+        }
         isCreating.value = true;
         try {
             const newChannel = crypto.randomUUID();
