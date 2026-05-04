@@ -44,7 +44,7 @@ body {
     overflow-y: auto;
     display: flex;
     flex-direction: column;
-    padding-top: 8px;
+    padding-top: 3px;
 }
 
 .sidebar-logo {
@@ -631,6 +631,7 @@ body {
     font-weight: 600;
     text-decoration: none;
     cursor: pointer;
+    margin-top: 4px;
 }
 .btn-create-club:hover { background: #dbeafe; }
 
