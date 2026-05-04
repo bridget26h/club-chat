@@ -49,7 +49,18 @@
                             class="club-card"
                             :class="{ active: $route.params.clubId === club.channel }"
                         >
-                            <div class="club-card-icon">&#128172;</div>
+                            <div class="club-card-icon">
+                                <graffiti-get-media
+                                    v-if="club.icon"
+                                    :url="club.icon"
+                                    :accept="{ types: ['image/*'] }"
+                                    v-slot="{ media }"
+                                >
+                                    <img v-if="media" :src="media.dataUrl" class="club-card-img" />
+                                    <span v-else>&#128172;</span>
+                                </graffiti-get-media>
+                                <span v-else>&#128172;</span>
+                            </div>
                             <div class="club-card-name">{{ club.title }}</div>
                             <div class="club-card-preview">{{ club.lastMessage || '' }}</div>
                         </router-link>
@@ -58,12 +69,7 @@
                         </div>
                     </div>
 
-                    <form class="create-club-form" @submit.prevent="createClub">
-                        <input type="text" v-model="newClubName" placeholder="New club name" />
-                        <button type="submit" class="btn-primary small" :disabled="!newClubName || isCreating">
-                            {{ isCreating ? '...' : 'Create' }}
-                        </button>
-                    </form>
+                    <router-link to="/create" class="btn-create-club">+ Create Club</router-link>
 
                     <div class="sidebar-bottom">
                         <div class="sidebar-tabs">

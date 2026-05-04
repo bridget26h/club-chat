@@ -1,0 +1,33 @@
+<div class="create-page">
+    <h2>Create a Club</h2>
+    <div class="create-form">
+        <div class="form-group">
+            <label>Club Name *</label>
+            <input type="text" v-model="newClubName" placeholder="e.g. Rocket Team" />
+        </div>
+
+        <div class="form-group">
+            <label>Description *</label>
+            <textarea v-model="newClubDescription" placeholder="What's this club about?" rows="3"></textarea>
+        </div>
+
+        <div class="form-group">
+            <label>Club Profile Picture</label>
+            <input type="file" accept="image/*" @change="handleFileSelect" />
+            <div v-if="previewUrl" class="icon-preview">
+            <img :src="previewUrl" alt="preview" />
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <router-link to="/" class="btn-secondary">Cancel</router-link>
+            <button
+            class="btn-primary"
+            @click="createClub"
+            :disabled="!newClubName || !newClubDescription || isCreating"
+            >
+            {{ isCreating ? 'Creating...' : 'Create Club' }}
+            </button>
+        </div>
+    </div>
+</div>

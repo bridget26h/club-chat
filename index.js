@@ -15,15 +15,14 @@ const router = createRouter({
         { path: "/", component: loadComponent("home") },
         { path: "/club/:clubId", component: loadComponent("club"), props: true },
         { path: "/explore", component: loadComponent("explore") },
+        { path: "/create", component: loadComponent("create") },
     ],
 });
 
 function setup() {
     const graffiti = useGraffiti();
     const session = useGraffitiSession();
-    const newClubName = ref("");
     const clubSearch = ref("");
-    const isCreating = ref(false);
     const sidebarTab = ref("calendar");
 
     const calendarOffset = ref(0);
@@ -96,11 +95,17 @@ function setup() {
     });
 
     const joinedClubs = computed(() => {
-        const channelToTitle = new Map();
-        for (const c of allClubObjects.value) channelToTitle.set(c.value.channel, c.value.title);
+        const channelToInfo = new Map();
+        for (const c of allClubObjects.value) {
+            channelToInfo.set(c.value.channel, {
+                title: c.value.title,
+                icon: c.value.icon || null,
+            });
+        }
         return joinObjects.value.map((obj) => ({
             channel: obj.value.target,
-            title: obj.value.title || channelToTitle.get(obj.value.target) || "Unknown Club",
+            title: obj.value.title || channelToInfo.get(obj.value.target)?.title || "Unknown Club",
+            icon: channelToInfo.get(obj.value.target)?.icon || null,
         }));
     });
 
@@ -108,20 +113,6 @@ function setup() {
         const q = clubSearch.value.toLowerCase();
         return q ? joinedClubs.value.filter(c => c.title.toLowerCase().includes(q)) : joinedClubs.value;
     });
-
-    async function createClub() {
-        if (!newClubName.value.trim()) return;
-        isCreating.value = true;
-        try {
-        const newChannel = crypto.randomUUID();
-        await graffiti.post({ value: { activity: "Create", type: "Club", channel: newChannel, title: newClubName.value.trim(), published: Date.now() }, channels: [DISCOVERY_CHANNEL] }, session.value);
-        await graffiti.post({ value: { activity: "Join", target: newChannel, title: newClubName.value.trim(), published: Date.now() }, channels: [joinActorChannel.value] }, session.value);
-        newClubName.value = "";
-        router.push(`/club/${newChannel}`);
-        } finally {
-        isCreating.value = false;
-        }
-    }
 
     async function leaveClub(channel) {
         const joinObj = joinObjectByChannel.value.get(channel);
@@ -131,9 +122,6 @@ function setup() {
     }
 
     return {
-        newClubName,
-        isCreating,
-        createClub,
         leaveClub,
         joinedClubs,
         calendarOffset,

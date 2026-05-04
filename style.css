@@ -589,3 +589,66 @@ body {
     font-size: 1rem;
     font-weight: 700;
 }.cal-select:hover { color: #2563eb; }
+
+.btn-create-club {
+    display: block;
+    text-align: center;
+    background: #eff6ff;
+    color: #2563eb;
+    border: 1px dashed #93c5fd;
+    border-radius: 8px;
+    padding: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+}
+.btn-create-club:hover { background: #dbeafe; }
+
+.create-page { padding: 32px; max-width: 480px; }
+.create-page h2 { font-size: 1.3rem; font-weight: 700; margin-bottom: 24px; }
+.create-form { display: flex; flex-direction: column; gap: 18px; }
+.form-group { display: flex; flex-direction: column; gap: 6px; }
+.form-group label { font-size: 0.85rem; font-weight: 600; color: #374151; }
+.form-group input[type="text"],
+.form-group textarea {
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 0.9rem;
+    font-family: inherit;
+    outline: none;
+    resize: vertical;
+}
+.form-group input:focus,
+.form-group textarea:focus { border-color: #2563eb; }
+.icon-preview { margin-top: 8px; }
+.icon-preview img { width: 64px; height: 64px; border-radius: 10px; object-fit: cover; }
+.form-actions { display: flex; gap: 10px; justify-content: flex-end; }
+.btn-secondary {
+    background: #f3f4f6;
+    color: #374151;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    padding: 8px 18px;
+    font-size: 0.88rem;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+}
+.btn-secondary:hover { background: #e5e7eb; }
+
+.explore-item-desc {
+    display: block;
+    font-size: 0.78rem;
+    color: #6b7280;
+    margin-top: 2px;
+}
+.club-icon-img { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; }
+
+.club-card-img {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    object-fit: cover;
+}
