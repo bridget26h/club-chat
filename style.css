@@ -391,6 +391,17 @@ body {
     cursor: pointer;
 }
 .btn-leave:hover { background: #fee2e2; }
+.btn-leave-popup {
+    background: #f3f4f6;
+    color: #374151;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-size: 0.78rem;
+    cursor: pointer;
+    font-family: inherit;
+}
+.btn-leave-popup:hover { background: #e5e7eb; }
 
 .day-label {
     text-align: center;

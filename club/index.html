@@ -48,7 +48,7 @@
 
                 <div v-if="!isEditing" class="club-info-actions">
                     <button class="btn-secondary small" v-if="isCreator" @click="startEdit">Edit Club</button>
-                    <button class="btn-danger small" @click="confirmLeave">Leave Club</button>
+                    <button class="btn-leave-popup" @click="confirmLeave">Leave Club</button>
                     <button class="btn-danger small" v-if="isCreator" @click="confirmDelete">Delete Club</button>
                 </div>
 
