@@ -243,6 +243,13 @@ body {
     background: #2563eb;
     color: #fff;
     font-weight: 700;
+    border-radius: 6px;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
 }
 
 .saved-title {
