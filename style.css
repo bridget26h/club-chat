@@ -122,9 +122,9 @@ body {
     height: 220px;
     overflow-y: scroll;
     flex-shrink: 0;
+    scrollbar-width: none;
 }
-
-.club-grid::-webkit-scrollbar { width: 6px; }
+.club-grid::-webkit-scrollbar { display: none; }
 .club-grid::-webkit-scrollbar-track { background: #f3f4f6; border-radius: 3px; }
 .club-grid::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 3px; }
 .club-grid::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
