@@ -328,10 +328,38 @@ body {
 .chat-header {
     display: flex;
     align-items: center;
-    justify-content: center;
-    padding: 16px 24px;
+    justify-content: space-between;
+    padding: 16px 24px 10px;
     border-bottom: 1px solid #e5e7eb;
     position: relative;
+}
+
+.chat-header-left {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    width: 100%;
+}
+
+.chat-club-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: #f3f4f6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.chat-icon-img {
+    width: 48px;
+    height: 48px;
+    object-fit: cover;
+    border-radius: 50%;
 }
 .chat-header h2 {
     margin: 0;
@@ -356,13 +384,13 @@ body {
     text-align: center;
     font-size: 0.75rem;
     color: #9ca3af;
-    margin: 12px 0;
+    margin: 3px 0;
 }
 
 .messages-wrap {
     flex: 1;
     overflow-y: auto;
-    padding: 20px 24px;
+    padding: 10px 24px 20px;
     display: flex;
     flex-direction: column;
     gap: 12px;
@@ -654,30 +682,7 @@ body {
     object-fit: cover;
 }
 
-.chat-header-left {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
-}
-.chat-club-icon {
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    background: #f3f4f6;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.1rem;
-    overflow: hidden;
-    flex-shrink: 0;
-}
-.chat-icon-img {
-    width: 48px;
-    height: 48px;
-    object-fit: cover;
-    border-radius: 50%;
-}
+
 .btn-club-title {
     background: none;
     border: none;
@@ -685,7 +690,7 @@ body {
     font-size: 1rem;
     font-weight: 600;
     color: #111827;
-    padding: 0;
+    padding: 6px 0;
     display: flex;
     align-items: center;
     gap: 4px;
@@ -759,7 +764,7 @@ body {
 
 .club-info-popup {
     position: absolute;
-    top: 96px;
+    top: 100px;
     left: 50%;
     translate: -50% 0;
     transform-origin: top center;
