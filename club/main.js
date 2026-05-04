@@ -10,16 +10,94 @@ async function loadMessageComponent() {
 }
 
 function setup(props) {
-    const router = useRouter();
     const graffiti = useGraffiti();
     const session = useGraffitiSession();
+    const router = useRouter();
     const clubId = computed(() => props.clubId);
+
+    const showInfo = ref(false);
+    const isEditing = ref(false);
+    const editName = ref("");
+    const editDescription = ref("");
+    const editFile = ref(null);
+    const editPreviewUrl = ref(null);
+    const isSavingEdit = ref(false);
 
     const { objects: allClubObjects } = useGraffitiDiscover(
         [DISCOVERY_CHANNEL],
         { properties: { value: { required: ["activity","type","channel","title"], properties: { activity: { const: "Create" }, type: { const: "Club" }, channel: { type: "string" }, title: { type: "string" } } } } }
     );
-    const clubTitle = computed(() => allClubObjects.value.find((c) => c.value.channel === clubId.value)?.value.title || "Club");
+
+    const clubObject = computed(() => allClubObjects.value.find((c) => c.value.channel === clubId.value));
+    const clubTitle = computed(() => clubObject.value?.value.title || "Club");
+    const clubDescription = computed(() => clubObject.value?.value.description || "");
+    const clubIcon = computed(() => clubObject.value?.value.icon || null);
+    const clubCreator = computed(() => clubObject.value?.actor || "");
+    const isCreator = computed(() => session.value?.actor === clubCreator.value);
+
+    function startEdit() {
+        editName.value = clubTitle.value;
+        editDescription.value = clubDescription.value;
+        editPreviewUrl.value = null;
+        editFile.value = null;
+        isEditing.value = true;
+    }
+
+    function handleEditFile(event) {
+        const file = event.target.files[0];
+        if (file) {
+        editFile.value = file;
+        editPreviewUrl.value = URL.createObjectURL(file);
+        }
+    }
+
+    async function saveEdit() {
+        if (!clubObject.value) return;
+        isSavingEdit.value = true;
+        try {
+            const newValue = {
+                activity: "Create",
+                type: "Club",
+                channel: clubId.value,
+                title: editName.value.trim(),
+                description: editDescription.value.trim(),
+                published: Date.now(),
+            };
+
+            if (editFile.value) {
+                newValue.icon = await graffiti.postMedia({ data: editFile.value }, session.value);
+            } else if (clubIcon.value) {
+                newValue.icon = clubIcon.value;
+            }
+
+            await graffiti.delete(clubObject.value, session.value);
+            await graffiti.post({
+                value: newValue,
+                channels: [DISCOVERY_CHANNEL],
+            }, session.value);
+            isEditing.value = false;
+        } finally {
+            isSavingEdit.value = false;
+        }
+    }
+
+    async function confirmDelete() {
+        if (confirm(`Are you sure you want to delete "${clubTitle.value}" permanently? This cannot be undone.`)) {
+            if (!clubObject.value) return;
+            try {
+                await graffiti.delete(clubObject.value, session.value);
+            } catch (e) {
+                console.warn("Could not delete club object:", e);
+            }
+            try {
+                const joinObj = joinObjects.value.find(o => o.value.target === clubId.value);
+                if (joinObj) await graffiti.delete(joinObj, session.value);
+            } catch (e) {
+                console.warn("Could not delete join record:", e);
+            }
+            router.push("/");
+        }
+    }
 
     const myMessage = ref("");
     const isSending = ref(false);
@@ -35,34 +113,32 @@ function setup(props) {
         messageObjects.value.toSorted((a, b) => a.value.published - b.value.published)
     );
 
-  const saveActorChannel = computed(() =>
-    session.value ? `${session.value.actor}/saved` : null
-  );
-  const { objects: savedObjects } = useGraffitiDiscover(
-    () => saveActorChannel.value ? [saveActorChannel.value] : [],
-    { properties: { value: { required: ["activity","messageUrl"], properties: { activity: { const: "Save" }, messageUrl: { type: "string" } } } } }
-  );
-  const savedUrls = computed(() => {
-    const s = new Set();
-    for (const obj of savedObjects.value) s.add(obj.value.messageUrl);
-    return s;
-  });
+    const saveActorChannel = computed(() => session.value ? `${session.value.actor}/saved` : null);
+    const { objects: savedObjects } = useGraffitiDiscover(
+        () => saveActorChannel.value ? [saveActorChannel.value] : [],
+        { properties: { value: { required: ["activity","messageUrl"], properties: { activity: { const: "Save" }, messageUrl: { type: "string" } } } } }
+    );
+    const savedUrls = computed(() => {
+        const s = new Set();
+        for (const obj of savedObjects.value) s.add(obj.value.messageUrl);
+        return s;
+    });
 
-  async function saveMessage(msg) {
-    if (!saveActorChannel.value) return;
-    await graffiti.post({
-        value: {
-            activity: "Save",
-            messageUrl: msg.url,
-            content: msg.value.content,
-            actor: msg.actor,
-            clubId: clubId.value,
-            clubTitle: clubTitle.value,
-            published: Date.now(),
-      },
-      channels: [saveActorChannel.value],
-    }, session.value);
-  }
+    async function saveMessage(msg) {
+        if (!saveActorChannel.value) return;
+        await graffiti.post({
+            value: {
+                activity: "Save",
+                messageUrl: msg.url,
+                content: msg.value.content,
+                actor: msg.actor,
+                clubId: clubId.value,
+                clubTitle: clubTitle.value,
+                published: Date.now(),
+            },
+            channels: [saveActorChannel.value],
+        }, session.value);
+    }
 
     async function sendMessage() {
         if (!myMessage.value.trim() || !clubId.value) return;
@@ -84,10 +160,7 @@ function setup(props) {
         }
     }
 
-    const joinActorChannel = computed(() =>
-        session.value ? `${session.value.actor}/clubs` : null
-    );
-
+    const joinActorChannel = computed(() => session.value ? `${session.value.actor}/clubs` : null);
     const { objects: joinObjects } = useGraffitiDiscover(
         () => joinActorChannel.value ? [joinActorChannel.value] : [],
         { properties: { value: { required: ["activity","target"], properties: { activity: { const: "Join" }, target: { type: "string" } } } } }
@@ -99,6 +172,7 @@ function setup(props) {
         await graffiti.delete(joinObj, session.value);
         router.push("/");
     }
+
     function confirmLeave() {
         if (confirm(`Are you sure you want to leave ${clubTitle.value}?`)) {
             leaveCurrentClub();
@@ -107,6 +181,20 @@ function setup(props) {
 
     return {
         clubTitle,
+        clubDescription,
+        clubIcon,
+        clubCreator,
+        isCreator,
+        showInfo,
+        isEditing,
+        editName,
+        editDescription,
+        editPreviewUrl,
+        isSavingEdit,
+        startEdit,
+        handleEditFile,
+        saveEdit,
+        confirmDelete,
         myMessage,
         isSending,
         isDeleting,
@@ -118,7 +206,6 @@ function setup(props) {
         saveMessage,
         confirmLeave,
     };
-
 }
 
 export default async () => ({

@@ -31,42 +31,41 @@ function setup() {
         if (!newClubName.value.trim() || !newClubDescription.value.trim()) return;
         isCreating.value = true;
         try {
-        const newChannel = crypto.randomUUID();
+            const newChannel = crypto.randomUUID();
 
-        let iconUrl = null;
-        if (selectedFile.value) {
-            iconUrl = await graffiti.postMedia({ data: selectedFile.value }, session.value);
-        }
+            const clubValue = {
+                activity: "Create",
+                type: "Club",
+                channel: newChannel,
+                title: newClubName.value.trim(),
+                description: newClubDescription.value.trim(),
+                published: Date.now(),
+            };
 
-        await graffiti.post({
-            value: {
-            activity: "Create",
-            type: "Club",
-            channel: newChannel,
-            title: newClubName.value.trim(),
-            description: newClubDescription.value.trim(),
-            icon: iconUrl,
-            published: Date.now(),
-            },
-            channels: [DISCOVERY_CHANNEL],
-        }, session.value);
+            if (selectedFile.value) {
+                clubValue.icon = await graffiti.postMedia({ data: selectedFile.value }, session.value);
+            }
 
-        await graffiti.post({
-            value: {
-            activity: "Join",
-            target: newChannel,
-            title: newClubName.value.trim(),
-            published: Date.now(),
-            },
-            channels: [joinActorChannel.value],
-        }, session.value);
+            await graffiti.post({
+                value: clubValue,
+                channels: [DISCOVERY_CHANNEL],
+            }, session.value);
 
-        router.push(`/club/${newChannel}`);
+            await graffiti.post({
+                value: {
+                    activity: "Join",
+                    target: newChannel,
+                    title: newClubName.value.trim(),
+                    published: Date.now(),
+                },
+                channels: [joinActorChannel.value],
+            }, session.value);
+
+            router.push(`/club/${newChannel}`);
         } finally {
-        isCreating.value = false;
+            isCreating.value = false;
         }
     }
-
     return {
         newClubName,
         newClubDescription,

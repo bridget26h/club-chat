@@ -1,7 +1,79 @@
 <div class="chat-pane">
     <div class="chat-header">
-      <h2>{{ clubTitle }}</h2>
-      <button class="btn-leave" @click="confirmLeave">Leave Club</button>
+        <div class="chat-header-left">
+            <div class="chat-club-icon">
+                <graffiti-get-media
+                    v-if="clubIcon"
+                    :url="clubIcon"
+                    :accept="{ types: ['image/*'] }"
+                    v-slot="{ media }"
+                >
+                    <img v-if="media" :src="media.dataUrl" class="chat-icon-img" />
+                    <span v-else>&#128172;</span>
+                </graffiti-get-media>
+                <span v-else>&#128172;</span>
+            </div>
+            <button class="btn-club-title" @click="showInfo = !showInfo">
+                {{ clubTitle }} ›
+            </button>
+        </div>
+    </div>
+
+    <div v-if="showInfo" class="club-info-popup">
+        <div class="club-info-header">
+            <div class="club-info-icon">
+                <graffiti-get-media
+                    v-if="clubIcon"
+                    :url="clubIcon"
+                    :accept="{ types: ['image/*'] }"
+                    v-slot="{ media }"
+                >
+                    <img v-if="media" :src="media.dataUrl" class="club-info-img" />
+                    <span v-else>&#128172;</span>
+                </graffiti-get-media>
+                <span v-else>&#128172;</span>
+            </div>
+            <div>
+                <div class="club-info-name">{{ clubTitle }}</div>
+                <div class="club-info-creator">Created by <graffiti-actor-to-handle :actor="clubCreator"></graffiti-actor-to-handle></div>
+            </div>
+        </div>
+
+        <p class="club-info-desc">{{ clubDescription || 'No description.' }}</p>
+
+        <div class="club-info-divider"></div>
+
+        <div v-if="!isEditing" class="club-info-actions">
+            <button class="btn-secondary small" v-if="isCreator" @click="startEdit">Edit Club</button>
+            <button class="btn-danger small" @click="confirmLeave">Leave Club</button>
+            <button class="btn-danger small" v-if="isCreator" @click="confirmDelete">Delete Club</button>
+        </div>
+
+        <div v-if="isEditing" class="club-edit-form">
+            <div class="form-group">
+                <label>Name</label>
+                <input type="text" v-model="editName" />
+            </div>
+            <div class="form-group">
+                <label>Description</label>
+                <textarea v-model="editDescription" rows="3"></textarea>
+            </div>
+            <div class="form-group">
+                <label>Icon</label>
+                <input type="file" accept="image/*" @change="handleEditFile" />
+                <div v-if="editPreviewUrl" class="icon-preview">
+                    <img :src="editPreviewUrl" />
+                </div>
+            </div>
+            <div class="form-actions">
+                <button class="btn-secondary small" @click="isEditing = false">Cancel</button>
+                <button class="btn-primary small" @click="saveEdit" :disabled="isSavingEdit">
+                    {{ isSavingEdit ? 'Saving...' : 'Save' }}
+                </button>
+            </div>
+        </div>
+
+        <button class="club-info-close" @click="showInfo = false">✕</button>
     </div>
 
     <div class="messages-wrap">
