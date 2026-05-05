@@ -84,7 +84,10 @@
                         @delete="deleteMessage(item.msg)"
                         @save="saveMessage(item.msg)"></message-item>
                 </template>
-                <li v-if="sortedMessages.length === 0">No messages yet.</li>
+                <div v-if="sortedMessages.length === 0" class="empty-chat">
+                    <p>No messages yet.</p>
+                    <p class="empty-chat-sub">Be the first to say something!</p>
+                </div>
             </template>
         </div>
 

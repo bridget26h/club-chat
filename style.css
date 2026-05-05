@@ -913,3 +913,16 @@ body {
     color: #6b7280;
     padding-left: 8px;
 }
+.empty-chat {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: #6b7280;
+    padding: 40px 0;
+}
+.empty-chat-icon { font-size: 2.5rem; }
+.empty-chat p { font-size: 0.9rem; font-weight: 500; color: #717782; }
+.empty-chat-sub { font-size: 0.82rem; color: #9ca3af; font-weight: 400; }
