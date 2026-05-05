@@ -144,6 +144,40 @@ function setup(props) {
     const sortedMessages = computed(() =>
         messageObjects.value.toSorted((a, b) => a.value.published - b.value.published)
     );
+    const groupedMessages = computed(() => {
+        const groups = [];
+        let currentDate = null;
+        for (const msg of sortedMessages.value) {
+            const msgDate = new Date(msg.value.published).toDateString();
+            if (msgDate !== currentDate) {
+                currentDate = msgDate;
+                const date = new Date(msg.value.published);
+                const today = new Date();
+                const yesterday = new Date();
+                yesterday.setDate(today.getDate() - 1);
+                const sevenDaysAgo = new Date();
+                sevenDaysAgo.setDate(today.getDate() - 7);
+                let label;
+                if (msgDate === today.toDateString()) {
+                    label = "Today at " + date.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+                }
+                else if (msgDate === yesterday.toDateString()) {
+                    label = "Yesterday at " + date.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+                }
+                else if (date > sevenDaysAgo) {
+                    label = date.toLocaleDateString([], { weekday: 'long' }) +
+                            " at " + date.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+                }
+                else {
+                    label = date.toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' }) +
+                            " at " + date.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+                }
+                groups.push({ type: 'label', label });
+            }
+            groups.push({ type: 'message', msg });
+        }
+        return groups;
+    });
 
     const saveActorChannel = computed(() => session.value ? `${session.value.actor}/saved` : null);
     const { objects: savedObjects } = useGraffitiDiscover(
@@ -228,6 +262,7 @@ function setup(props) {
         confirmLeave,
         autoResize,
         messageInput,
+        groupedMessages,
     };
 }
 

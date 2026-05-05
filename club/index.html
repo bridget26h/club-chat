@@ -71,21 +71,20 @@
         <div class="messages-wrap">
             <p v-if="areMessagesLoading"><em>Loading messages...</em></p>
             <template v-else>
-                <div class="day-label">Today</div>
-                <ul>
+                <template v-for="item of groupedMessages" :key="item.type === 'label' ? item.label : item.msg.url">
+                    <div v-if="item.type === 'label'" class="day-label">{{ item.label }}</div>
                     <message-item
-                        v-for="msg of sortedMessages"
-                        :key="msg.url"
-                        :actor="msg.actor"
-                        :content="msg.value.content"
-                        :published="msg.value.published"
-                        :is-owner="msg.actor === $graffitiSession.value?.actor"
-                        :deleting="isDeleting.has(msg.url)"
-                        :saved="savedUrls.has(msg.url)"
-                        @delete="deleteMessage(msg)"
-                        @save="saveMessage(msg)"></message-item>
-                    <li v-if="sortedMessages.length === 0">No messages yet.</li>
-                </ul>
+                        v-else
+                        :actor="item.msg.actor"
+                        :content="item.msg.value.content"
+                        :published="item.msg.value.published"
+                        :is-owner="item.msg.actor === $graffitiSession.value?.actor"
+                        :deleting="isDeleting.has(item.msg.url)"
+                        :saved="savedUrls.has(item.msg.url)"
+                        @delete="deleteMessage(item.msg)"
+                        @save="saveMessage(item.msg)"></message-item>
+                </template>
+                <li v-if="sortedMessages.length === 0">No messages yet.</li>
             </template>
         </div>
 
