@@ -2,20 +2,69 @@
     <h2>Explore Clubs</h2>
     <p class="explore-subtitle">Find and join clubs to start chatting.</p>
 
-    <div class="search-bar" style="margin-bottom: 16px;">
-        <span class="search-icon">&#9906;</span>
-        <input type="text" v-model="searchQuery" placeholder="Search clubs..." />
+    <div class="explore-controls">
+        <div class="explore-search">
+            <span class="search-icon">&#9906;</span>
+            <input type="text" v-model="searchQuery" placeholder="Search clubs" />
+        </div>
+
+        <div class="explore-toolbar">
+            <div class="toolbar-btn-wrap">
+                <button class="toolbar-btn" :class="{ active: filterBy !== 'all' }" @click="showFilter = !showFilter; showSort = false">
+                    <span class="toolbar-icon">&#9776;</span> {{ filterLabel }}
+                </button>
+                <div v-if="showFilter" class="toolbar-dropdown">
+                    <p class="dropdown-section">Filter</p>
+                    <button :class="{ checked: filterBy === 'all' }" @click="filterBy = 'all'">
+                        <span class="check">{{ filterBy === 'all' ? '✓' : '' }}</span> All clubs
+                    </button>
+                    <button :class="{ checked: filterBy === 'joined' }" @click="filterBy = 'joined'">
+                        <span class="check">{{ filterBy === 'joined' ? '✓' : '' }}</span> Joined
+                    </button>
+                    <button :class="{ checked: filterBy === 'notjoined' }" @click="filterBy = 'notjoined'">
+                        <span class="check">{{ filterBy === 'notjoined' ? '✓' : '' }}</span> Not joined
+                    </button>
+                </div>
+            </div>
+
+            <div class="toolbar-btn-wrap">
+                <button class="toolbar-btn" @click="showSort = !showSort; showFilter = false">
+                    Sort {{ sortDir === 'asc' ? '↑' : '↓' }}
+                </button>
+                <div v-if="showSort" class="toolbar-dropdown">
+                    <p class="dropdown-section">Sort by</p>
+                    <button :class="{ checked: sortField === 'name' }" @click="sortField = 'name'">
+                        <span class="check">{{ sortField === 'name' ? '✓' : '' }}</span> Name
+                    </button>
+                    <button :class="{ checked: sortField === 'date' }" @click="sortField = 'date'">
+                        <span class="check">{{ sortField === 'date' ? '✓' : '' }}</span> Date created
+                    </button>
+                    <div class="dropdown-divider"></div>
+                    <p class="dropdown-section">Direction</p>
+                    <button :class="{ checked: sortDir === 'asc' }" @click="sortDir = 'asc'">
+                        <span class="check">{{ sortDir === 'asc' ? '✓' : '' }}</span>
+                        {{ sortField === 'name' ? 'A to Z' : 'Oldest first' }}
+                    </button>
+                    <button :class="{ checked: sortDir === 'desc' }" @click="sortDir = 'desc'">
+                        <span class="check">{{ sortDir === 'desc' ? '✓' : '' }}</span>
+                        {{ sortField === 'name' ? 'Z to A' : 'Newest first' }}
+                    </button>
+                </div>
+            </div>
+
+            <div class="view-toggle">
+                <button class="view-btn-list" :class="{ active: viewMode === 'list' }" @click="viewMode = 'list'">☰</button>
+                <button :class="{ active: viewMode === 'grid' }" @click="viewMode = 'grid'">⊞</button>
+            </div>
+        </div>
+
+        <div v-if="showSort || showFilter" class="popup-overlay" @click="showSort = false; showFilter = false"></div>
     </div>
 
-    <ul class="explore-list">
-        <li v-for="club of filteredAllClubs" :key="club.url" class="explore-item">
+    <ul v-if="viewMode === 'list'" class="explore-list">
+        <li v-for="club of processedClubs" :key="club.url" class="explore-item">
             <div class="explore-item-icon">
-                <graffiti-get-media
-                    v-if="club.value.icon"
-                    :url="club.value.icon"
-                    :accept="{ types: ['image/*'] }"
-                    v-slot="{ media }"
-                >
+                <graffiti-get-media v-if="club.value.icon" :url="club.value.icon" :accept="{ types: ['image/*'] }" v-slot="{ media }">
                     <img v-if="media" :src="media.dataUrl" class="club-icon-img" />
                     <span v-else>&#128172;</span>
                 </graffiti-get-media>
@@ -25,14 +74,26 @@
                 <span class="explore-item-name">{{ club.value.title }}</span>
                 <span class="explore-item-desc">{{ club.value.description || '' }}</span>
             </div>
-            <button
-                v-if="!joinedChannels.has(club.value.channel)"
-                class="btn-join"
-                @click="joinClub(club)"
-            >Join</button>
+            <button v-if="!joinedChannels.has(club.value.channel)" class="btn-join" @click="joinClub(club)">Join</button>
             <span v-else class="joined-badge">Joined</span>
         </li>
-        <li v-if="filteredAllClubs.length === 0 && searchQuery" class="explore-empty">No clubs found.</li>
-        <li v-if="!searchQuery && filteredAllClubs.length === 0" class="explore-empty">No clubs exist yet.</li>
+        <li v-if="processedClubs.length === 0" class="explore-empty">No clubs found.</li>
     </ul>
+
+    <div v-else class="explore-grid">
+        <div v-for="club of processedClubs" :key="club.url" class="explore-grid-item">
+            <div class="explore-grid-icon">
+                <graffiti-get-media v-if="club.value.icon" :url="club.value.icon" :accept="{ types: ['image/*'] }" v-slot="{ media }">
+                    <img v-if="media" :src="media.dataUrl" class="explore-grid-img" />
+                    <span v-else>&#128172;</span>
+                </graffiti-get-media>
+                <span v-else>&#128172;</span>
+            </div>
+            <div class="explore-grid-name">{{ club.value.title }}</div>
+            <div class="explore-grid-desc">{{ club.value.description || '' }}</div>
+            <button v-if="!joinedChannels.has(club.value.channel)" class="btn-join" @click="joinClub(club)">Join</button>
+            <span v-else class="joined-badge">Joined</span>
+        </div>
+        <div v-if="processedClubs.length === 0" class="explore-empty">No clubs found.</div>
+    </div>
 </div>

@@ -7,6 +7,23 @@ function setup() {
     const graffiti = useGraffiti();
     const session = useGraffitiSession();
     const searchQuery = ref("");
+    const sortField = ref("date");
+    const sortDir = ref("desc");
+    const filterBy = ref("all");
+    const viewMode = ref("list");
+    const showSort = ref(false);
+    const showFilter = ref(false);
+
+    const filterLabel = computed(() => {
+        if (filterBy.value === 'joined') return 'Joined';
+        if (filterBy.value === 'notjoined') return 'Not joined';
+        return 'Filter';
+    });
+
+    const sortLabel = computed(() => {
+        const dir = sortDir.value === 'asc' ? '↑' : '↓';
+        return sortField.value === 'name' ? `Name ${dir}` : `Date ${dir}`;
+    });
 
     const { objects: allClubObjects } = useGraffitiDiscover(
         [DISCOVERY_CHANNEL],
@@ -25,23 +42,47 @@ function setup() {
         return s;
     });
 
-    const filteredAllClubs = computed(() => {
+    const processedClubs = computed(() => {
+        let clubs = [...allClubObjects.value];
+        if (searchQuery.value) {
         const q = searchQuery.value.toLowerCase();
-        return q ? allClubObjects.value.filter((c) => c.value.title.toLowerCase().includes(q)) : allClubObjects.value;
+        clubs = clubs.filter(c => c.value.title.toLowerCase().includes(q));
+        }
+        if (filterBy.value === 'joined') clubs = clubs.filter(c => joinedChannels.value.has(c.value.channel));
+        else if (filterBy.value === 'notjoined') clubs = clubs.filter(c => !joinedChannels.value.has(c.value.channel));
+        if (sortField.value === 'name') {
+        clubs.sort((a, b) => sortDir.value === 'asc'
+            ? a.value.title.localeCompare(b.value.title)
+            : b.value.title.localeCompare(a.value.title));
+        } else {
+        clubs.sort((a, b) => sortDir.value === 'asc'
+            ? a.value.published - b.value.published
+            : b.value.published - a.value.published);
+        }
+        return clubs;
     });
 
     async function joinClub(clubObject) {
         await graffiti.post(
-        {
-            value: { activity: "Join", target: clubObject.value.channel, title: clubObject.value.title, published: Date.now() }, channels: [joinActorChannel.value]
-        },
+        { value: { activity: "Join", target: clubObject.value.channel, title: clubObject.value.title, published: Date.now() }, channels: [joinActorChannel.value] },
         session.value
         );
     }
 
     return {
-        searchQuery, filteredAllClubs, joinedChannels, joinClub
-    };
+        searchQuery,
+        sortField,
+        sortDir,
+        filterBy,
+        viewMode,
+        showSort,
+        sortLabel,
+        processedClubs,
+        joinedChannels,
+        joinClub,
+        showFilter,
+        filterLabel,
+};
 }
 
 export default async () => ({
