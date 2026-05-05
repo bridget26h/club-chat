@@ -26,7 +26,11 @@
                     </div>
                     <div>
                         <div class="club-info-name">{{ clubTitle }}</div>
-                        <div class="club-info-creator">Created by <graffiti-actor-to-handle :actor="clubCreator"></graffiti-actor-to-handle></div>
+                        <div class="club-info-creator">Created by
+                            <graffiti-actor-to-handle :actor="clubCreator" v-slot="{ handle }">
+                                {{ (handle || '').replace('.graffiti.actor', '') }}
+                            </graffiti-actor-to-handle>
+                        </div>
                     </div>
                 </div>
 
@@ -43,11 +47,15 @@
                 <div v-if="isEditing" class="club-edit-form">
                     <div class="form-group">
                         <label>Name</label>
-                        <input type="text" v-model="editName" />
+                        <input type="text" v-model="editName" maxlength="50" />
+                        <span v-if="editName.length >= 50" class="char-warning">⚠ 50 maximum character limit reached</span>
+                        <span v-else-if="editName.length >= 40" class="char-warning">{{ 50 - editName.length }} characters remaining</span>
                     </div>
                     <div class="form-group">
                         <label>Description</label>
-                        <textarea v-model="editDescription" rows="3"></textarea>
+                        <textarea v-model="editDescription" rows="3" maxlength="120"></textarea>
+                        <span v-if="editDescription.length >= 120" class="char-warning">⚠ 120 maximum character limit reached</span>
+                        <span v-else-if="editDescription.length >= 100" class="char-warning">{{ 120 - editDescription.length }} characters remaining</span>
                     </div>
                     <div class="form-group">
                         <label>Icon</label>
