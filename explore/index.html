@@ -56,9 +56,23 @@
                 </Transition>
             </div>
 
-            <div class="view-toggle">
-                <button class="view-btn-list" :class="{ active: viewMode === 'list' }" @click="viewMode = 'list'">☰</button>
-                <button :class="{ active: viewMode === 'grid' }" @click="viewMode = 'grid'">⊞</button>
+            <div class="view-toggle" :class="{ 'grid-active': viewMode === 'grid' }">
+                <button :class="{ active: viewMode === 'list' }" @click="viewMode = 'list'">
+                    <div class="view-check-wrap">
+                        <Transition name="check-fade">
+                            <div v-if="viewMode === 'list'" class="view-check"></div>
+                        </Transition>
+                    </div>
+                    ☰
+                </button>
+                <button :class="{ active: viewMode === 'grid' }" @click="viewMode = 'grid'">
+                    <div class="view-check-wrap">
+                        <Transition name="check-fade">
+                            <div v-if="viewMode === 'grid'" class="view-check"></div>
+                        </Transition>
+                    </div>
+                    ⊞
+                </button>
             </div>
         </div>
 

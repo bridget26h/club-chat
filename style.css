@@ -1109,28 +1109,67 @@ body {
     border: 1px solid #d1d5db;
     border-radius: 8px;
     overflow: hidden;
+    position: relative;
 }
+.view-toggle::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 50px;
+    background: #dbeafe;
+    border-radius: 6px;
+    transition: transform 0.2s ease;
+    transform: translateX(0);
+}
+.view-toggle.grid-active::before {
+    transform: translateX(100%);
+}
+
 .view-toggle button {
     background: none;
     border: none;
     padding: 6px 14px;
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     font-weight: 700;
     cursor: pointer;
-    color: #374151;
-    transition: background 0.15s;
+    color: #9ca3af;
+    transition: color 0.2s ease;
     height: 34px;
     display: flex;
     align-items: center;
+    justify-content: center;
+    gap: 4px;
+    position: relative;
+    z-index: 1;
+    width: 50px;
 }
-.view-toggle button:hover { background: #f3f4f6; }
 .view-toggle button.active {
-    background: #dbeafe;
     color: #2563eb;
 }
+.view-check-wrap {
+    width: 0;
+    overflow: visible;
+    transition: width 0.15s ease;
+    flex-shrink: 0;
+    margin-right: -4px;    /* add this line */
+}
+.active .view-check-wrap {
+    width: 14px;
+}
+.view-check {
+    height: 10px;
+    width: 5px;
+    border-bottom: 2px solid #2563eb;
+    border-right: 2px solid #2563eb;
+    transform: rotate(45deg);
+    margin-bottom: 3px;
+    flex-shrink: 0;
+}
 .view-btn-list {
-    padding-bottom: 20px;
-    padding-top: 2px;
+    padding: 6px 14px !important;
+    padding-bottom: 6px !important;
+    padding-top: 6px !important;
 }
 
 .dropdown-enter-active {
@@ -1144,5 +1183,15 @@ body {
 .dropdown-enter-from,
 .dropdown-leave-to {
     transform: translateY(-4px);
+    opacity: 0;
+}
+.check-fade-enter-active {
+    transition: opacity 0.15s ease 0.1s;
+}
+.check-fade-leave-active {
+    transition: opacity 0.1s ease;
+}
+.check-fade-enter-from,
+.check-fade-leave-to {
     opacity: 0;
 }
