@@ -1,4 +1,4 @@
-import { ref, computed } from "vue";
+import { ref, computed, nextTick } from "vue";
 import { useGraffiti, useGraffitiSession, useGraffitiDiscover } from "@graffiti-garden/wrapper-vue";
 import { useRouter } from "vue-router";
 
@@ -34,6 +34,29 @@ function setup(props) {
     const clubIcon = computed(() => clubObject.value?.value.icon || null);
     const clubCreator = computed(() => clubObject.value?.actor || "");
     const isCreator = computed(() => session.value?.actor === clubCreator.value);
+    const messageInput = ref(null);
+
+    function autoResize() {
+        const el = messageInput.value;
+        if (!el) return;
+        el.style.height = 'auto';
+        el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+    }
+
+    async function sendMessage() {
+        if (!myMessage.value.trim() || !clubId.value) return;
+        isSending.value = true;
+        try {
+            await graffiti.post({ value: { content: myMessage.value.trim(), published: Date.now() }, channels: [clubId.value] }, session.value);
+            myMessage.value = "";
+            await nextTick();
+            if (messageInput.value) {
+                messageInput.value.style.height = 'auto';
+            }
+        } finally {
+            isSending.value = false;
+        }
+    }
 
     function startEdit() {
         editName.value = clubTitle.value;
@@ -149,17 +172,6 @@ function setup(props) {
         }, session.value);
     }
 
-    async function sendMessage() {
-        if (!myMessage.value.trim() || !clubId.value) return;
-        isSending.value = true;
-        try {
-        await graffiti.post({ value: { content: myMessage.value.trim(), published: Date.now() }, channels: [clubId.value] }, session.value);
-        myMessage.value = "";
-        } finally {
-        isSending.value = false;
-        }
-    }
-
     async function deleteMessage(msg) {
         isDeleting.value.add(msg.url);
         try {
@@ -214,6 +226,8 @@ function setup(props) {
         savedUrls,
         saveMessage,
         confirmLeave,
+        autoResize,
+        messageInput,
     };
 }
 
