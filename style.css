@@ -1132,3 +1132,17 @@ body {
     padding-bottom: 20px;
     padding-top: 2px;
 }
+
+.dropdown-enter-active {
+    transition: transform 0.15s ease, opacity 0.15s ease;
+    transform-origin: top left;
+}
+.dropdown-leave-active {
+    transition: transform 0.1s ease, opacity 0.1s ease;
+    transform-origin: top left;
+}
+.dropdown-enter-from,
+.dropdown-leave-to {
+    transform: translateY(-4px);
+    opacity: 0;
+}

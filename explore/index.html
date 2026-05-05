@@ -13,43 +13,47 @@
                 <button class="toolbar-btn" :class="{ active: filterBy !== 'all' }" @click="showFilter = !showFilter; showSort = false">
                     <span class="toolbar-icon">&#9776;</span> {{ filterLabel }}
                 </button>
-                <div v-if="showFilter" class="toolbar-dropdown">
-                    <p class="dropdown-section">Filter</p>
-                    <button :class="{ checked: filterBy === 'all' }" @click="filterBy = 'all'">
-                        <span class="check">{{ filterBy === 'all' ? '✓' : '' }}</span> All clubs
-                    </button>
-                    <button :class="{ checked: filterBy === 'joined' }" @click="filterBy = 'joined'">
-                        <span class="check">{{ filterBy === 'joined' ? '✓' : '' }}</span> Joined
-                    </button>
-                    <button :class="{ checked: filterBy === 'notjoined' }" @click="filterBy = 'notjoined'">
-                        <span class="check">{{ filterBy === 'notjoined' ? '✓' : '' }}</span> Not joined
-                    </button>
-                </div>
+                <Transition name="dropdown">
+                    <div v-if="showFilter" class="toolbar-dropdown">
+                        <p class="dropdown-section">Filter</p>
+                        <button :class="{ checked: filterBy === 'all' }" @click="filterBy = 'all'">
+                            <span class="check">{{ filterBy === 'all' ? '✓' : '' }}</span> All clubs
+                        </button>
+                        <button :class="{ checked: filterBy === 'joined' }" @click="filterBy = 'joined'">
+                            <span class="check">{{ filterBy === 'joined' ? '✓' : '' }}</span> Joined
+                        </button>
+                        <button :class="{ checked: filterBy === 'notjoined' }" @click="filterBy = 'notjoined'">
+                            <span class="check">{{ filterBy === 'notjoined' ? '✓' : '' }}</span> Not joined
+                        </button>
+                    </div>
+                </Transition>
             </div>
 
             <div class="toolbar-btn-wrap">
                 <button class="toolbar-btn" @click="showSort = !showSort; showFilter = false">
                     Sort {{ sortDir === 'asc' ? '↑' : '↓' }}
                 </button>
-                <div v-if="showSort" class="toolbar-dropdown">
-                    <p class="dropdown-section">Sort by</p>
-                    <button :class="{ checked: sortField === 'name' }" @click="sortField = 'name'">
-                        <span class="check">{{ sortField === 'name' ? '✓' : '' }}</span> Name
-                    </button>
-                    <button :class="{ checked: sortField === 'date' }" @click="sortField = 'date'">
-                        <span class="check">{{ sortField === 'date' ? '✓' : '' }}</span> Date created
-                    </button>
-                    <div class="dropdown-divider"></div>
-                    <p class="dropdown-section">Direction</p>
-                    <button :class="{ checked: sortDir === 'asc' }" @click="sortDir = 'asc'">
-                        <span class="check">{{ sortDir === 'asc' ? '✓' : '' }}</span>
-                        {{ sortField === 'name' ? 'A to Z' : 'Oldest first' }}
-                    </button>
-                    <button :class="{ checked: sortDir === 'desc' }" @click="sortDir = 'desc'">
-                        <span class="check">{{ sortDir === 'desc' ? '✓' : '' }}</span>
-                        {{ sortField === 'name' ? 'Z to A' : 'Newest first' }}
-                    </button>
-                </div>
+                <Transition name="dropdown">
+                    <div v-if="showSort" class="toolbar-dropdown">
+                        <p class="dropdown-section">Sort by</p>
+                        <button :class="{ checked: sortField === 'name' }" @click="sortField = 'name'">
+                            <span class="check">{{ sortField === 'name' ? '✓' : '' }}</span> Name
+                        </button>
+                        <button :class="{ checked: sortField === 'date' }" @click="sortField = 'date'">
+                            <span class="check">{{ sortField === 'date' ? '✓' : '' }}</span> Date created
+                        </button>
+                        <div class="dropdown-divider"></div>
+                        <p class="dropdown-section">Direction</p>
+                        <button :class="{ checked: sortDir === 'asc' }" @click="sortDir = 'asc'">
+                            <span class="check">{{ sortDir === 'asc' ? '✓' : '' }}</span>
+                            {{ sortField === 'name' ? 'A to Z' : 'Oldest first' }}
+                        </button>
+                        <button :class="{ checked: sortDir === 'desc' }" @click="sortDir = 'desc'">
+                            <span class="check">{{ sortDir === 'desc' ? '✓' : '' }}</span>
+                            {{ sortField === 'name' ? 'Z to A' : 'Newest first' }}
+                        </button>
+                    </div>
+                </Transition>
             </div>
 
             <div class="view-toggle">
