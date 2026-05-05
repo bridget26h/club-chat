@@ -63,7 +63,7 @@
                                 </graffiti-get-media>
                                 <span v-else>&#128172;</span>
                             </div>
-                            <div class="club-card-name">{{ club.title }}</div>
+                            <div class="club-card-name">{{ club.title.length > 18 ? club.title.slice(0, 13) + '…' : club.title }}</div>
                             <div class="club-card-preview">{{ club.lastMessage || '' }}</div>
                         </router-link>
                         <div v-if="filteredJoinedClubs.length === 0" class="club-grid-empty">
