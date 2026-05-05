@@ -46,16 +46,20 @@
 
                 <div v-if="isEditing" class="club-edit-form">
                     <div class="form-group">
-                        <label>Name</label>
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <label>Name</label>
+                            <span v-if="editName.length >= 50" class="char-warning">⚠ Limit reached</span>
+                            <span v-else-if="editName.length >= 40" class="char-warning">{{ 50 - editName.length }} characters remaining</span>
+                        </div>
                         <input type="text" v-model="editName" maxlength="50" />
-                        <span v-if="editName.length >= 50" class="char-warning">⚠ 50 maximum character limit reached</span>
-                        <span v-else-if="editName.length >= 40" class="char-warning">{{ 50 - editName.length }} characters remaining</span>
                     </div>
                     <div class="form-group">
-                        <label>Description</label>
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <label>Description</label>
+                            <span v-if="editDescription.length >= 120" class="char-warning">⚠ Limit reached</span>
+                            <span v-else-if="editDescription.length >= 100" class="char-warning">{{ 120 - editDescription.length }} characters remaining</span>
+                        </div>
                         <textarea v-model="editDescription" rows="3" maxlength="120"></textarea>
-                        <span v-if="editDescription.length >= 120" class="char-warning">⚠ 120 maximum character limit reached</span>
-                        <span v-else-if="editDescription.length >= 100" class="char-warning">{{ 120 - editDescription.length }} characters remaining</span>
                     </div>
                     <div class="form-group">
                         <label>Icon</label>
