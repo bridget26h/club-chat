@@ -1,12 +1,31 @@
 <div class="message-row" :class="{ mine: isOwner }">
-    <div class="bubble">{{ content }}</div>
-    <div class="message-meta">
-        <span class="time">{{ formattedTime }}</span>
-        <button v-if="isOwner" class="btn-action" @click="$emit('delete')" :disabled="deleting">
-            {{ deleting ? '…' : 'Delete' }}
-        </button>
-        <button class="btn-action" @click="$emit('save')" :disabled="saved">
-            {{ saved ? 'Saved' : 'Save' }}
-        </button>
+    <div v-if="!isOwner" class="message-with-avatar">
+        <div class="avatar">
+            <graffiti-actor-to-handle :actor="actor" v-slot="{ handle }">
+                <span>{{ (handle || '?')[0].toUpperCase() }}</span>
+            </graffiti-actor-to-handle>
+        </div>
+        <div class="message-body">
+            <div class="message-sender">
+                <graffiti-actor-to-handle :actor="actor" v-slot="{ handle }">
+                    {{ (handle || '').replace('.graffiti.actor', '') }}
+                </graffiti-actor-to-handle>
+              </div>
+            <div class="bubble">{{ content }}</div>
+            <div class="message-meta">
+            <span class="time">{{ formattedTime }}</span>
+            <button class="btn-action" @click="$emit('save')" :disabled="saved">
+                {{ saved ? 'Saved' : 'Save' }}
+            </button>
+            </div>
+        </div>
     </div>
-  </div>
+    <template v-else>
+        <div class="bubble">{{ content }}</div>
+        <div class="message-meta">
+            <span class="time">{{ formattedTime }}</span>
+            <button class="btn-action" @click="$emit('delete')" :disabled="deleting">{{ deleting ? '…' : 'Delete' }}</button>
+            <button class="btn-action" @click="$emit('save')" :disabled="saved">{{ saved ? 'Saved' : 'Save' }}</button>
+        </div>
+    </template>
+</div>
