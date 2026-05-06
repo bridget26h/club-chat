@@ -34,8 +34,7 @@
                     </div>
                 </div>
 
-                <p class="club-info-desc">{{ clubDescription || 'No description.' }}</p>
-
+                <p class="club-info-desc">{{ clubDescription || (!isCreator ? 'No description.' : 'No description. Click Edit Club to add one.') }}</p>
                 <div class="club-info-divider"></div>
 
                 <div v-if="!isEditing" class="club-info-actions">

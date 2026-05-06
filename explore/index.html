@@ -80,6 +80,7 @@
     </div>
 
     <div class="explore-results">
+        <Transition name="view-switch" mode="out-in">
         <ul v-if="viewMode === 'list'" class="explore-list">
             <li v-for="club of processedClubs" :key="club.url" class="explore-item">
                 <div class="explore-item-icon">
@@ -115,5 +116,6 @@
             </div>
             <div v-if="processedClubs.length === 0" class="explore-empty">No clubs found.</div>
         </div>
+        </Transition>
     </div>
 </div>

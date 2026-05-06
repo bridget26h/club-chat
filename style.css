@@ -308,11 +308,11 @@ body {
 .saved-item {
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 12px;
+    gap: 10px;
+    padding: 8px 10px;
     border-radius: 8px;
     background: #f9fafb;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
 }
 .saved-item-body {
     flex: 1;
@@ -1219,6 +1219,20 @@ body {
 .dropdown-leave-to {
     transform: translateY(-4px);
     opacity: 0;
+}
+.view-switch-enter-active {
+    transition: opacity 0.15s ease, transform 0.15s ease;
+}
+.view-switch-leave-active {
+    transition: opacity 0.1s ease, transform 0.1s ease;
+}
+.view-switch-enter-from {
+    opacity: 0;
+    transform: translateY(6px);
+}
+.view-switch-leave-to {
+    opacity: 0;
+    transform: translateY(-6px);
 }
 .check-fade-enter-active {
     transition: opacity 0.08s ease;
