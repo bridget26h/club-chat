@@ -102,8 +102,6 @@ function setup(props, { emit }) {
         clearTimeout(leaveTimer);
     }
 
-
-
     return {
         formattedTime,
         showActions,

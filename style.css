@@ -1452,6 +1452,7 @@ body {
     color: #374151;
     cursor: pointer;
     text-align: left;
+    border-radius: 12px;
 }
 
 .msg-menu button:hover { background: #f9fafb; }

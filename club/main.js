@@ -192,18 +192,23 @@ function setup(props) {
 
     async function saveMessage(msg) {
         if (!saveActorChannel.value) return;
-        await graffiti.post({
-            value: {
-                activity: "Save",
-                messageUrl: msg.url,
-                content: msg.value.content,
-                actor: msg.actor,
-                clubId: clubId.value,
-                clubTitle: clubTitle.value,
-                published: Date.now(),
-            },
-            channels: [saveActorChannel.value],
-        }, session.value);
+        const existing = savedObjects.value.find(o => o.value.messageUrl === msg.url);
+        if (existing) {
+            await graffiti.delete(existing, session.value);
+        } else {
+            await graffiti.post({
+                value: {
+                    activity: "Save",
+                    messageUrl: msg.url,
+                    content: msg.value.content,
+                    actor: msg.actor,
+                    clubId: clubId.value,
+                    clubTitle: clubTitle.value,
+                    published: Date.now(),
+                },
+                channels: [saveActorChannel.value],
+            }, session.value);
+        }
     }
 
     async function deleteMessage(msg) {
@@ -215,11 +220,15 @@ function setup(props) {
         }
     }
     async function editMessage(msg, newContent) {
-        await graffiti.patch(
-            { value: { content: newContent, edited: true } },
-            msg,
-            session.value
-        );
+        await graffiti.delete(msg, session.value);
+        await graffiti.post({
+            value: {
+                content: newContent,
+                published: msg.value.published,
+                edited: true,
+            },
+            channels: [clubId.value],
+        }, session.value);
     }
 
     const joinActorChannel = computed(() => session.value ? `${session.value.actor}/clubs` : null);

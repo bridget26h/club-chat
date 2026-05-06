@@ -78,10 +78,12 @@ function setup() {
         for (const c of allClubObjects.value) {
             channelToIcon.set(c.value.channel, c.value.icon || null);
         }
-        return savedItems.value.map(item => ({
-            ...item,
-            clubIcon: channelToIcon.get(item.value.clubId) || null,
-        }));
+        return savedItems.value
+            .map(item => ({
+                ...item,
+                clubIcon: channelToIcon.get(item.value.clubId) || null,
+            }))
+            .toSorted((a, b) => b.value.published - a.value.published);
     });
 
     async function unsaveItem(item) {
