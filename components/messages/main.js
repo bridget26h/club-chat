@@ -5,13 +5,33 @@ function setup(props, { emit }) {
         new Date(props.published).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
     );
 
-    const showDots = ref(false);
+    const showActions = ref(false);
     const menuOpen = ref(false);
+    const showReactions = ref(false);
     const isEditing = ref(false);
     const editContent = ref('');
+    const isPressing = ref(false);
+    const menuAbove = ref(false);
+    const reactionsAbove = ref(false);
+    let pressTimer = null;
 
-    function toggleMenu() {
-        menuOpen.value = !menuOpen.value;
+    function onMouseLeave() {
+        showActions.value = false;
+        menuOpen.value = false;
+        showReactions.value = false;
+    }
+
+    function onTouchStart() {
+        isPressing.value = true;
+        pressTimer = setTimeout(() => {
+            isPressing.value = false;
+            showActions.value = true;
+        }, 500);
+    }
+
+    function onTouchEnd() {
+        clearTimeout(pressTimer);
+        isPressing.value = false;
     }
 
     function startEdit() {
@@ -38,23 +58,68 @@ function setup(props, { emit }) {
     }
 
     function doDelete() {
-        emit('delete');
+        if (confirm('Delete this message?')) {
+            emit('delete');
+        }
         menuOpen.value = false;
     }
 
+    function doReply() {
+        // placeholder
+    }
+
+    function doReact(emoji) {
+        showReactions.value = false;
+        // placeholder
+    }
+
+function toggleMenu(e) {
+    menuOpen.value = !menuOpen.value;
+    showReactions.value = false;
+    if (menuOpen.value) {
+        const rect = e.currentTarget.getBoundingClientRect();
+        menuAbove.value = rect.top > 200;
+        setTimeout(() => {
+            document.addEventListener('click', () => { menuOpen.value = false; }, { once: true });
+        }, 50);
+    }
+}
+
+function toggleReactions(e) {
+    showReactions.value = !showReactions.value;
+    menuOpen.value = false;
+    if (showReactions.value) {
+        const rect = e.currentTarget.getBoundingClientRect();
+        reactionsAbove.value = rect.top > 100;
+        setTimeout(() => {
+            document.addEventListener('click', () => { showReactions.value = false; }, { once: true });
+        }, 50);
+    }
+}
+
     return {
         formattedTime,
-        showDots,
+        showActions,
         menuOpen,
+        showReactions,
         isEditing,
         editContent,
+        isPressing,
         isEdited: computed(() => props.edited),
+        onMouseLeave,
         toggleMenu,
+        toggleReactions,
+        onTouchStart,
+        onTouchEnd,
         startEdit,
         cancelEdit,
         submitEdit,
         doSave,
         doDelete,
+        doReply,
+        doReact,
+        menuAbove,
+        reactionsAbove,
     };
 }
 

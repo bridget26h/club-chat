@@ -1,4 +1,10 @@
-<div class="message-row" :class="{ mine: isOwner }" @mouseenter="showDots = true" @mouseleave="showDots = false">
+<div class="message-row" :class="{ mine: isOwner }"
+    @mouseenter="showActions = true"
+    @mouseleave="onMouseLeave"
+    @touchstart.passive="onTouchStart"
+    @touchend="onTouchEnd"
+    @touchcancel="onTouchEnd">
+
     <div v-if="!isOwner" class="message-with-avatar">
         <div class="avatar">
             <graffiti-actor-to-handle :actor="actor" v-slot="{ handle }">
@@ -11,13 +17,51 @@
                     {{ (handle || '').replace('.graffiti.actor', '') }}
                 </graffiti-actor-to-handle>
             </div>
-            <div class="bubble">{{ content }}</div>
-            <span v-if="isEdited" class="edited-label">edited</span>
-            <div class="message-meta">
-                <button v-if="showDots" class="btn-dots" @click.stop="toggleMenu">•••</button>
+            <div class="bubble-wrap">
+                <div class="bubble" :class="{ pressing: isPressing }">{{ content }}</div>
+                <Transition name="check-fade">
+                    <div v-if="showActions" class="msg-action-btns">
+                        <div class="msg-menu-wrap">
+                            <button class="msg-icon-btn" @click.stop="toggleReactions" title="React">
+                                <i class="fa-regular fa-face-smile"></i>
+                            </button>
+                            <Transition name="dropdown">
+                                <div v-if="showReactions" class="reaction-bar" :class="{ above: reactionsAbove, 'reaction-bar-right': isOwner }" @click.stop>
+                                    <button class="reaction-btn" @click.stop="doReact('❤️')">❤️</button>
+                                    <button class="reaction-btn" @click.stop="doReact('😆')">😆</button>
+                                    <button class="reaction-btn" @click.stop="doReact('😮')">😮</button>
+                                    <button class="reaction-btn" @click.stop="doReact('😢')">😢</button>
+                                    <button class="reaction-btn" @click.stop="doReact('😡')">😡</button>
+                                    <button class="reaction-btn" @click.stop="doReact('👍')">👍</button>
+                                </div>
+                            </Transition>
+                        </div>
+                        <button class="msg-icon-btn" @click.stop="doReply" title="Reply">
+                            <i class="fa fa-reply"></i>
+                        </button>
+                        <div class="msg-menu-wrap">
+                            <button class="msg-icon-btn" @click.stop="toggleMenu" title="More">
+                                <i class="fa fa-ellipsis-h"></i>
+                            </button>
+                            <Transition name="dropdown">
+                                <div v-if="menuOpen" class="msg-menu" :class="{ above: menuAbove, 'msg-menu-left': isOwner }" @click.stop>                                    <button @click="doSave">
+                                        <i class="fa fa-bookmark"></i>
+                                        {{ saved ? 'Unsave' : 'Save' }}
+                                    </button>
+                                    <div class="msg-menu-divider"></div>
+                                    <button @click="doDelete" class="msg-menu-danger">
+                                        <i class="fa fa-trash"></i> Delete
+                                    </button>
+                                </div>
+                            </Transition>
+                        </div>
+                    </div>
+                </Transition>
             </div>
+            <span v-if="isEdited" class="edited-label">edited</span>
         </div>
     </div>
+
     <template v-else>
         <div class="message-body" style="align-items:flex-end">
             <template v-if="isEditing">
@@ -28,18 +72,51 @@
                 </div>
             </template>
             <template v-else>
-                <div class="bubble">{{ content }}</div>
+                <div class="bubble-wrap">
+                    <Transition name="check-fade">
+                        <div v-if="showActions" class="msg-action-btns">
+                            <div class="msg-menu-wrap">
+                                <button class="msg-icon-btn" @click.stop="toggleMenu" title="More">
+                                    <i class="fa fa-ellipsis-h"></i>
+                                </button>
+                                <Transition name="dropdown">
+                                    <div v-if="menuOpen" class="msg-menu" :class="{ above: menuAbove, 'msg-menu-left': isOwner }" @click.stop>                                        <button @click="startEdit">
+                                            <i class="fa fa-pencil"></i> Edit
+                                        </button>
+                                        <button @click="doSave">
+                                            <i class="fa fa-bookmark"></i>
+                                            {{ saved ? 'Unsave' : 'Save' }}
+                                        </button>
+                                        <div class="msg-menu-divider"></div>
+                                        <button @click="doDelete" class="msg-menu-danger">
+                                            <i class="fa fa-trash"></i> Delete
+                                        </button>
+                                    </div>
+                                </Transition>
+                            </div>
+                            <button class="msg-icon-btn" @click.stop="doReply" title="Reply">
+                                <i class="fa fa-reply"></i>
+                            </button>
+                            <div class="msg-menu-wrap">
+                                <button class="msg-icon-btn" @click.stop="toggleReactions" title="React">
+                                    <i class="fa-regular fa-face-smile"></i>
+                                </button>
+                                <Transition name="dropdown">
+                                    <div v-if="showReactions" class="reaction-bar" :class="{ above: reactionsAbove, 'reaction-bar-right': isOwner }" @click.stop>                                        <button class="reaction-btn" @click.stop="doReact('❤️')">❤️</button>
+                                        <button class="reaction-btn" @click.stop="doReact('😆')">😆</button>
+                                        <button class="reaction-btn" @click.stop="doReact('😮')">😮</button>
+                                        <button class="reaction-btn" @click.stop="doReact('😢')">😢</button>
+                                        <button class="reaction-btn" @click.stop="doReact('😡')">😡</button>
+                                        <button class="reaction-btn" @click.stop="doReact('👍')">👍</button>
+                                    </div>
+                                </Transition>
+                            </div>
+                        </div>
+                    </Transition>
+                    <div class="bubble" :class="{ pressing: isPressing }">{{ content }}</div>
+                </div>
                 <span v-if="isEdited" class="edited-label">edited</span>
             </template>
-            <div class="message-meta">
-                <button v-if="showDots && !isEditing" class="btn-dots" @click.stop="toggleMenu">•••</button>
-            </div>
         </div>
     </template>
-
-    <div v-if="menuOpen" class="msg-menu">
-        <button v-if="isOwner && !isEditing" @click="startEdit">Edit</button>
-        <button @click="doSave">{{ saved ? 'Saved' : 'Save' }}</button>
-        <button v-if="isOwner" @click="doDelete" class="msg-menu-danger">Delete</button>
-    </div>
 </div>
