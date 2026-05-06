@@ -504,6 +504,8 @@ body {
     flex-direction: column;
     align-items: flex-start;
     max-width: 70%;
+    position: relative;
+    padding: 2px 0;
 }
 .message-row.mine {
     align-self: flex-end;
@@ -1219,10 +1221,10 @@ body {
     opacity: 0;
 }
 .check-fade-enter-active {
-    transition: opacity 0.15s ease 0.1s;
+    transition: opacity 0.08s ease;
 }
 .check-fade-leave-active {
-    transition: opacity 0.1s ease;
+    transition: opacity 0.08s ease;
 }
 .check-fade-enter-from,
 .check-fade-leave-to {

@@ -14,11 +14,14 @@ function setup(props, { emit }) {
     const menuAbove = ref(false);
     const reactionsAbove = ref(false);
     let pressTimer = null;
+    let leaveTimer = null;
 
     function onMouseLeave() {
-        showActions.value = false;
-        menuOpen.value = false;
-        showReactions.value = false;
+        leaveTimer = setTimeout(() => {
+            showActions.value = false;
+            menuOpen.value = false;
+            showReactions.value = false;
+        }, 75);
     }
 
     function onTouchStart() {
@@ -65,37 +68,41 @@ function setup(props, { emit }) {
     }
 
     function doReply() {
-        // placeholder
     }
 
     function doReact(emoji) {
         showReactions.value = false;
-        // placeholder
     }
 
-function toggleMenu(e) {
-    menuOpen.value = !menuOpen.value;
-    showReactions.value = false;
-    if (menuOpen.value) {
-        const rect = e.currentTarget.getBoundingClientRect();
-        menuAbove.value = rect.top > 200;
-        setTimeout(() => {
-            document.addEventListener('click', () => { menuOpen.value = false; }, { once: true });
-        }, 50);
+    function toggleMenu(e) {
+        menuOpen.value = !menuOpen.value;
+        showReactions.value = false;
+        if (menuOpen.value) {
+            const rect = e.currentTarget.getBoundingClientRect();
+            menuAbove.value = rect.top > 200;
+            setTimeout(() => {
+                document.addEventListener('click', () => { menuOpen.value = false; }, { once: true });
+            }, 50);
+        }
     }
-}
 
-function toggleReactions(e) {
-    showReactions.value = !showReactions.value;
-    menuOpen.value = false;
-    if (showReactions.value) {
-        const rect = e.currentTarget.getBoundingClientRect();
-        reactionsAbove.value = rect.top > 100;
-        setTimeout(() => {
-            document.addEventListener('click', () => { showReactions.value = false; }, { once: true });
-        }, 50);
+    function toggleReactions(e) {
+        showReactions.value = !showReactions.value;
+        menuOpen.value = false;
+        if (showReactions.value) {
+            const rect = e.currentTarget.getBoundingClientRect();
+            reactionsAbove.value = rect.top > 100;
+            setTimeout(() => {
+                document.addEventListener('click', () => { showReactions.value = false; }, { once: true });
+            }, 50);
+        }
     }
-}
+
+    function onActionsEnter() {
+        clearTimeout(leaveTimer);
+    }
+
+
 
     return {
         formattedTime,
@@ -120,6 +127,7 @@ function toggleReactions(e) {
         doReact,
         menuAbove,
         reactionsAbove,
+        onActionsEnter,
     };
 }
 

@@ -20,7 +20,7 @@
             <div class="bubble-wrap">
                 <div class="bubble" :class="{ pressing: isPressing }">{{ content }}</div>
                 <Transition name="check-fade">
-                    <div v-if="showActions" class="msg-action-btns">
+                    <div v-if="showActions" class="msg-action-btns" @mouseenter="onActionsEnter">
                         <div class="msg-menu-wrap">
                             <button class="msg-icon-btn" @click.stop="toggleReactions" title="React">
                                 <i class="fa-regular fa-face-smile"></i>
@@ -41,7 +41,7 @@
                         </button>
                         <div class="msg-menu-wrap">
                             <button class="msg-icon-btn" @click.stop="toggleMenu" title="More">
-                                <i class="fa fa-ellipsis-h"></i>
+                                <i class="fa fa-ellipsis-v"></i>
                             </button>
                             <Transition name="dropdown">
                                 <div v-if="menuOpen" class="msg-menu" :class="{ above: menuAbove, 'msg-menu-left': isOwner }" @click.stop>                                    <button @click="doSave">
@@ -74,10 +74,10 @@
             <template v-else>
                 <div class="bubble-wrap">
                     <Transition name="check-fade">
-                        <div v-if="showActions" class="msg-action-btns">
+                        <div v-if="showActions" class="msg-action-btns" @mouseenter="onActionsEnter">
                             <div class="msg-menu-wrap">
                                 <button class="msg-icon-btn" @click.stop="toggleMenu" title="More">
-                                    <i class="fa fa-ellipsis-h"></i>
+                                    <i class="fa fa-ellipsis-v"></i>
                                 </button>
                                 <Transition name="dropdown">
                                     <div v-if="menuOpen" class="msg-menu" :class="{ above: menuAbove, 'msg-menu-left': isOwner }" @click.stop>                                        <button @click="startEdit">
