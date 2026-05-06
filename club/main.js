@@ -176,7 +176,7 @@ function setup(props) {
             }
             groups.push({ type: 'message', msg });
         }
-        return groups
+        return groups.reverse();
     });
 
     const saveActorChannel = computed(() => session.value ? `${session.value.actor}/saved` : null);
