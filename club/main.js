@@ -176,7 +176,7 @@ function setup(props) {
             }
             groups.push({ type: 'message', msg });
         }
-        return groups;
+        return groups
     });
 
     const saveActorChannel = computed(() => session.value ? `${session.value.actor}/saved` : null);
@@ -213,6 +213,13 @@ function setup(props) {
         } finally {
         isDeleting.value.delete(msg.url);
         }
+    }
+    async function editMessage(msg, newContent) {
+        await graffiti.patch(
+            { value: { content: newContent, edited: true } },
+            msg,
+            session.value
+        );
     }
 
     const joinActorChannel = computed(() => session.value ? `${session.value.actor}/clubs` : null);
@@ -263,6 +270,7 @@ function setup(props) {
         autoResize,
         messageInput,
         groupedMessages,
+        editMessage,
     };
 }
 

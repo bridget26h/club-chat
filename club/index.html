@@ -93,14 +93,19 @@
                         :is-owner="item.msg.actor === $graffitiSession.value?.actor"
                         :deleting="isDeleting.has(item.msg.url)"
                         :saved="savedUrls.has(item.msg.url)"
+                        :edited="item.msg.value.edited"
                         @delete="deleteMessage(item.msg)"
-                        @save="saveMessage(item.msg)"></message-item>
+                        @save="saveMessage(item.msg)"
+                        @edit="editMessage(item.msg, $event)">
+                    </message-item>
+
                 </template>
                 <div v-if="sortedMessages.length === 0" class="empty-chat">
                     <p>No messages yet.</p>
                     <p class="empty-chat-sub">Be the first to say something!</p>
                 </div>
             </template>
+            <div id="messages-anchor" style="height:1px; overflow-anchor: auto;"></div>
         </div>
 
         <form class="message-input-row" @submit.prevent="sendMessage">

@@ -1,4 +1,4 @@
-<div class="message-row" :class="{ mine: isOwner }">
+<div class="message-row" :class="{ mine: isOwner }" @mouseenter="showDots = true" @mouseleave="showDots = false">
     <div v-if="!isOwner" class="message-with-avatar">
         <div class="avatar">
             <graffiti-actor-to-handle :actor="actor" v-slot="{ handle }">
@@ -10,22 +10,36 @@
                 <graffiti-actor-to-handle :actor="actor" v-slot="{ handle }">
                     {{ (handle || '').replace('.graffiti.actor', '') }}
                 </graffiti-actor-to-handle>
-              </div>
+            </div>
             <div class="bubble">{{ content }}</div>
+            <span v-if="isEdited" class="edited-label">edited</span>
             <div class="message-meta">
-            <span class="time">{{ formattedTime }}</span>
-            <button class="btn-action" @click="$emit('save')" :disabled="saved">
-                {{ saved ? 'Saved' : 'Save' }}
-            </button>
+                <button v-if="showDots" class="btn-dots" @click.stop="toggleMenu">•••</button>
             </div>
         </div>
     </div>
     <template v-else>
-        <div class="bubble">{{ content }}</div>
-        <div class="message-meta">
-            <span class="time">{{ formattedTime }}</span>
-            <button class="btn-action" @click="$emit('delete')" :disabled="deleting">{{ deleting ? '…' : 'Delete' }}</button>
-            <button class="btn-action" @click="$emit('save')" :disabled="saved">{{ saved ? 'Saved' : 'Save' }}</button>
+        <div class="message-body" style="align-items:flex-end">
+            <template v-if="isEditing">
+                <textarea class="edit-input" v-model="editContent" rows="2"></textarea>
+                <div class="edit-actions">
+                    <button class="btn-action" @click="cancelEdit">Cancel</button>
+                    <button class="btn-action" @click="submitEdit">Save</button>
+                </div>
+            </template>
+            <template v-else>
+                <div class="bubble">{{ content }}</div>
+                <span v-if="isEdited" class="edited-label">edited</span>
+            </template>
+            <div class="message-meta">
+                <button v-if="showDots && !isEditing" class="btn-dots" @click.stop="toggleMenu">•••</button>
+            </div>
         </div>
     </template>
+
+    <div v-if="menuOpen" class="msg-menu">
+        <button v-if="isOwner && !isEditing" @click="startEdit">Edit</button>
+        <button @click="doSave">{{ saved ? 'Saved' : 'Save' }}</button>
+        <button v-if="isOwner" @click="doDelete" class="msg-menu-danger">Delete</button>
+    </div>
 </div>
