@@ -6,9 +6,9 @@
                 <div class="chat-club-icon">
                     <graffiti-get-media v-if="clubIcon" :url="clubIcon" :accept="{ types: ['image/*'] }" v-slot="{ media }">
                         <img v-if="media" :src="media.dataUrl" class="chat-icon-img" />
-                        <span v-else>&#128172;</span>
+                        <span v-else><i class="fa-regular fa-comment" style="color:#9ca3af"></i></span>
                     </graffiti-get-media>
-                    <span v-else>&#128172;</span>
+                    <span v-else><i class="fa-regular fa-comment" style="color:#9ca3af"></i></span>
                 </div>
                 <button class="btn-club-title" @click="showInfo = !showInfo">{{ clubTitle }} ›</button>
             </div>
@@ -20,9 +20,9 @@
                     <div class="club-info-icon">
                         <graffiti-get-media v-if="clubIcon" :url="clubIcon" :accept="{ types: ['image/*'] }" v-slot="{ media }">
                             <img v-if="media" :src="media.dataUrl" class="club-info-img" />
-                            <span v-else>&#128172;</span>
+                            <span v-else><i class="fa-regular fa-comment" style="color:#9ca3af"></i></span>
                         </graffiti-get-media>
-                        <span v-else>&#128172;</span>
+                        <span v-else><i class="fa-regular fa-comment" style="color:#9ca3af"></i></span>
                     </div>
                     <div>
                         <div class="club-info-name">{{ clubTitle }}</div>

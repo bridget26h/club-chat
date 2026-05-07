@@ -43,7 +43,7 @@ body {
     flex: 1;
     display: flex;
     flex-direction: column;
-    padding-top: 4px;
+    padding-top: -9;
     overflow: hidden;
 }
 .saved-panel {
@@ -145,7 +145,7 @@ body {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 8px;
-    height: 220px;
+    height: 250px;
     overflow-y: scroll;
     flex-shrink: 0;
     scrollbar-width: none;
@@ -1579,3 +1579,11 @@ body {
 }
 
 .btn-bottom-action:hover { background: #dbeafe; }
+
+.btn-bottom-action.explore {
+    background: #eff6ff;
+    color: #2563eb;
+    border: 1px dashed #93c5fd;
+}
+
+.btn-bottom-action.explore:hover { background: #dbeafe; }

@@ -86,9 +86,9 @@
                 <div class="explore-item-icon">
                     <graffiti-get-media v-if="club.value.icon" :url="club.value.icon" :accept="{ types: ['image/*'] }" v-slot="{ media }">
                         <img v-if="media" :src="media.dataUrl" class="club-icon-img" />
-                        <span v-else>&#128172;</span>
+                        <span v-else><i class="fa-regular fa-comment" style="color:#9ca3af"></i></span>
                     </graffiti-get-media>
-                    <span v-else>&#128172;</span>
+                    <span v-else><i class="fa-regular fa-comment" style="color:#9ca3af"></i></span>
                 </div>
                 <div class="explore-item-info">
                     <span class="explore-item-name">{{ club.value.title.length > 40 ? club.value.title.slice(0, 40) + '…' : club.value.title }}</span>
@@ -105,9 +105,9 @@
                 <div class="explore-grid-icon">
                     <graffiti-get-media v-if="club.value.icon" :url="club.value.icon" :accept="{ types: ['image/*'] }" v-slot="{ media }">
                         <img v-if="media" :src="media.dataUrl" class="explore-grid-img" />
-                        <span v-else>&#128172;</span>
+                        <span v-else><i class="fa-regular fa-comment" style="color:#9ca3af"></i></span>
                     </graffiti-get-media>
-                    <span v-else>&#128172;</span>
+                    <span v-else><i class="fa-regular fa-comment" style="color:#9ca3af"></i></span>
                 </div>
                 <div class="explore-grid-name">{{ club.value.title }}</div>
                 <div class="explore-grid-desc">{{ club.value.description || '' }}</div>

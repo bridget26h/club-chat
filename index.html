@@ -58,9 +58,9 @@
                                     v-slot="{ media }"
                                 >
                                     <img v-if="media" :src="media.dataUrl" class="club-card-img" />
-                                    <span v-else>&#128172;</span>
+                                    <span v-else><i class="fa fa-comment" style="color:#9ca3af"></i></span>
                                 </graffiti-get-media>
-                                <span v-else>&#128172;</span>
+                                <span v-else><i class="fa-regular fa-comment" style="color:#9ca3af"></i></span>
                             </div>
                             <div class="club-card-name">{{ club.title.length > 18 ? club.title.slice(0, 13) + '…' : club.title }}</div>
                             <div class="club-card-preview">{{ club.lastMessage || '' }}</div>
@@ -71,7 +71,7 @@
                     </div>
 
                     <div class="bottom-actions">
-                        <router-link to="/explore" class="btn-bottom-action">
+                        <router-link to="/explore" class="btn-bottom-action explore">
                             <i class="fa fa-compass"></i> Explore
                         </router-link>
                         <router-link to="/create" class="btn-bottom-action">
@@ -117,9 +117,9 @@
                                                 v-slot="{ media }"
                                             >
                                                 <img v-if="media" :src="media.dataUrl" class="saved-icon-img" />
-                                                <span v-else>&#128172;</span>
+                                                <span v-else><i class="fa-regular fa-comment" style="color:#9ca3af"></i></span>
                                             </graffiti-get-media>
-                                            <span v-else>&#128172;</span>
+                                            <span v-else><i class="fa-regular fa-comment" style="color:#9ca3af"></i></span>
                                         </div>
                                         <div class="saved-item-body">
                                             <span class="saved-meta">{{ item.value.clubTitle }}</span>
