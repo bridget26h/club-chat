@@ -1633,8 +1633,10 @@ body {
     display: flex;
     flex-wrap: wrap;
     gap: 3px;
-    margin-top: -6px;
+    margin-top: -5px;
     padding-left: 0;
+    position: relative;
+    z-index: 1;
 }
 
 .mine .reaction-display {
@@ -1654,17 +1656,15 @@ body {
     gap: 3px;
     color: #374151;
     transition: background 0.1s;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
-
-.reaction-pill:hover { background: #e5e7eb; }
 
 .reaction-pill.mine {
     background: #f0f0f0;
-    border-color: #fff;
+    border: 2px solid #fff;
     color: #374151;
-    border: 2px solid #ffffff;
 }
+.reaction-pill:hover { background: #e5e7eb; }
+
 
 .reaction-modal-overlay {
     position: fixed;
