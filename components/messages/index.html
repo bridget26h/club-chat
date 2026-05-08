@@ -54,7 +54,6 @@
                     </div>
                 </Transition>
             </div>
-            <span v-if="isEdited" class="edited-label">edited</span>
             <div v-if="groupedReactions.length > 0" class="reaction-display">
                 <button
                     v-for="r in groupedReactions"
@@ -65,6 +64,7 @@
                     {{ r.emoji }} {{ r.count }}
                 </button>
             </div>
+            <span v-if="isEdited" class="edited-label">edited</span>
         </div>
     </div>
 
@@ -121,7 +121,6 @@
                     </Transition>
                     <div class="bubble" :class="{ pressing: isPressing }">{{ content }}</div>
                 </div>
-                <span v-if="isEdited" class="edited-label">edited</span>
                 <div v-if="groupedReactions.length > 0" class="reaction-display">
                     <button
                         v-for="r in groupedReactions"
@@ -132,6 +131,7 @@
                         {{ r.emoji }} {{ r.count }}
                     </button>
                 </div>
+                <span v-if="isEdited" class="edited-label">edited</span>
             </template>
         </div>
     </template>
