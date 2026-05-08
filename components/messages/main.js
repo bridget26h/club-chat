@@ -71,6 +71,7 @@ function setup(props, { emit }) {
     }
 
     function doReact(emoji) {
+        emit('react', emoji);
         showReactions.value = false;
     }
 
@@ -102,6 +103,29 @@ function setup(props, { emit }) {
         clearTimeout(leaveTimer);
     }
 
+    const reactionPopupOpen = ref(false);
+    const reactionPopupPos = ref({ top: 0, left: 0 });
+
+    const groupedReactions = computed(() => {
+        const map = new Map();
+        for (const r of (props.reactions || [])) {
+            const e = r.value.emoji;
+            if (!map.has(e)) map.set(e, { emoji: e, count: 0, mine: false, actors: [] });
+            map.get(e).count++;
+            if (r.actor === props.currentActor) map.get(e).mine = true;
+            map.get(e).actors.push(r.actor);
+        }
+        return [...map.values()];
+    });
+
+    function openReactionPopup(emoji, e) {
+        emit('open-reactions', groupedReactions.value);
+    }    const reactionModal = ref({ open: false, groups: [] });
+
+    function openReactionModal(groups) {
+        reactionModal.value = { open: true, groups };
+    }
+
     return {
         formattedTime,
         showActions,
@@ -126,12 +150,18 @@ function setup(props, { emit }) {
         menuAbove,
         reactionsAbove,
         onActionsEnter,
+        groupedReactions,
+        reactionPopupOpen,
+        reactionPopupPos,
+        openReactionPopup,
+        reactionModal,
+        openReactionModal,
     };
 }
 
 export default async () => ({
-    props: ["actor", "content", "published", "isOwner", "deleting", "saved", "edited"],
-    emits: ["delete", "save", "edit"],
+    props: ["actor", "content", "published", "isOwner", "deleting", "saved", "edited", "reactions", "currentActor"],
+    emits: ["delete", "save", "edit", "react", "open-reactions"],
     setup,
     template: await fetch(new URL("./index.html", import.meta.url)).then((r) => r.text()),
 });

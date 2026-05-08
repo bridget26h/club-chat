@@ -55,6 +55,16 @@
                 </Transition>
             </div>
             <span v-if="isEdited" class="edited-label">edited</span>
+            <div v-if="groupedReactions.length > 0" class="reaction-display">
+                <button
+                    v-for="r in groupedReactions"
+                    :key="r.emoji"
+                    class="reaction-pill"
+                    :class="{ mine: r.mine }"
+                    @click.stop="openReactionPopup(r.emoji, $event)">
+                    {{ r.emoji }} {{ r.count }}
+                </button>
+            </div>
         </div>
     </div>
 
@@ -112,6 +122,16 @@
                     <div class="bubble" :class="{ pressing: isPressing }">{{ content }}</div>
                 </div>
                 <span v-if="isEdited" class="edited-label">edited</span>
+                <div v-if="groupedReactions.length > 0" class="reaction-display">
+                    <button
+                        v-for="r in groupedReactions"
+                        :key="r.emoji"
+                        class="reaction-pill"
+                        :class="{ mine: r.mine }"
+                        @click.stop="openReactionPopup(r.emoji, $event)">
+                        {{ r.emoji }} {{ r.count }}
+                    </button>
+                </div>
             </template>
         </div>
     </template>

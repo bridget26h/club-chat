@@ -93,11 +93,14 @@
                         :deleting="isDeleting.has(item.msg.url)"
                         :saved="savedUrls.has(item.msg.url)"
                         :edited="item.msg.value.edited"
+                        :reactions="reactionsByMessage.get(item.msg.url) || []"
+                        :current-actor="$graffitiSession.value?.actor"
                         @delete="deleteMessage(item.msg)"
                         @save="saveMessage(item.msg)"
-                        @edit="editMessage(item.msg, $event)">
+                        @edit="editMessage(item.msg, $event)"
+                        @react="reactToMessage(item.msg, $event)"
+                        @open-reactions="openReactionModal($event)">
                     </message-item>
-
                 </template>
                 <div v-if="sortedMessages.length === 0" class="empty-chat">
                     <p>No messages yet.</p>
@@ -120,5 +123,25 @@
             ></textarea>
             <button class="btn-send" type="submit" :disabled="!myMessage || isSending">➤</button>
         </form>
+    </div>
+
+    <div v-if="reactionModal.open" class="reaction-modal-overlay" @click="reactionModal.open = false">
+        <div class="reaction-modal" @click.stop>
+            <div class="reaction-modal-header">
+                <button class="reaction-modal-close" @click="reactionModal.open = false">✕</button>
+                <span class="reaction-modal-title">Reactions</span>
+            </div>
+            <div class="reaction-modal-body">
+                <div v-for="r in reactionModal.groups" :key="r.emoji">
+                    <div v-for="actor in r.actors" :key="actor" class="reaction-modal-row">
+                        <graffiti-actor-to-handle :actor="actor" v-slot="{ handle }">
+                            <div class="reaction-user-avatar">{{ (handle || '?')[0].toUpperCase() }}</div>
+                            <span class="reaction-user-name">{{ (handle || actor).replace('.graffiti.actor', '') }}</span>
+                        </graffiti-actor-to-handle>
+                        <span class="reaction-modal-emoji">{{ r.emoji }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>

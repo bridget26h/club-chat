@@ -184,6 +184,47 @@ function setup(props) {
         () => saveActorChannel.value ? [saveActorChannel.value] : [],
         { properties: { value: { required: ["activity","messageUrl"], properties: { activity: { const: "Save" }, messageUrl: { type: "string" } } } } }
     );
+    const { objects: reactionObjects } = useGraffitiDiscover(
+        () => clubId.value ? [clubId.value] : [],
+        { properties: { value: { required: ["activity","messageUrl","emoji"], properties: { activity: { const: "React" }, messageUrl: { type: "string" }, emoji: { type: "string" } } } } }
+    );
+
+    const reactionsByMessage = computed(() => {
+        const map = new Map();
+        for (const obj of reactionObjects.value) {
+            const url = obj.value.messageUrl;
+            if (!map.has(url)) map.set(url, []);
+            map.get(url).push(obj);
+        }
+        return map;
+    });
+
+    async function reactToMessage(msg, emoji) {
+        if (!session.value) return;
+        const existing = reactionObjects.value.find(
+            o => o.value.messageUrl === msg.url && o.actor === session.value.actor
+        );
+        if (existing) {
+            if (existing.value.emoji === emoji) {
+                await graffiti.delete(existing, session.value);
+                return;
+            }
+            await graffiti.delete(existing, session.value);
+        }
+        await graffiti.post({
+            value: {
+                activity: "React",
+                messageUrl: msg.url,
+                emoji,
+                published: Date.now(),
+            },
+            channels: [clubId.value],
+        }, session.value);
+    }
+    const reactionModal = ref({ open: false, groups: [] });
+    function openReactionModal(groups) {
+        reactionModal.value = { open: true, groups };
+    }
     const savedUrls = computed(() => {
         const s = new Set();
         for (const obj of savedObjects.value) s.add(obj.value.messageUrl);
@@ -280,6 +321,10 @@ function setup(props) {
         messageInput,
         groupedMessages,
         editMessage,
+        reactionsByMessage,
+        reactToMessage,
+        reactionModal,
+        openReactionModal,
     };
 }
 
