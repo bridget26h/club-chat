@@ -199,10 +199,11 @@ function setup(props) {
         return map;
     });
 
-    async function reactToMessage(msg, emoji) {
+    async function reactToMessage(msgOrUrl, emoji) {
         if (!session.value) return;
+        const msgUrl = typeof msgOrUrl === 'string' ? msgOrUrl : msgOrUrl.url;
         const existing = reactionObjects.value.find(
-            o => o.value.messageUrl === msg.url && o.actor === session.value.actor
+            o => o.value.messageUrl === msgUrl && o.actor === session.value.actor
         );
         if (existing) {
             if (existing.value.emoji === emoji) {
@@ -214,16 +215,17 @@ function setup(props) {
         await graffiti.post({
             value: {
                 activity: "React",
-                messageUrl: msg.url,
+                messageUrl: msgUrl,
                 emoji,
                 published: Date.now(),
             },
             channels: [clubId.value],
         }, session.value);
     }
-    const reactionModal = ref({ open: false, groups: [] });
-    function openReactionModal(groups) {
-        reactionModal.value = { open: true, groups };
+    const reactionModal = ref({ open: false, groups: [], msgUrl: null });
+
+    function openReactionModal({ groups, msgUrl }) {
+        reactionModal.value = { open: true, groups, msgUrl };
     }
     const savedUrls = computed(() => {
         const s = new Set();

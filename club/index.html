@@ -98,8 +98,10 @@
                         @delete="deleteMessage(item.msg)"
                         @save="saveMessage(item.msg)"
                         @edit="editMessage(item.msg, $event)"
-                        @react="reactToMessage(item.msg, $event)"
-                        @open-reactions="openReactionModal($event)">
+                        @react="reactToMessage(item.msg.url, $event)"
+                        :message-url="item.msg.url"
+                        @open-reactions="openReactionModal($event)"
+                        :url="item.msg.url">
                     </message-item>
                 </template>
                 <div v-if="sortedMessages.length === 0" class="empty-chat">
@@ -133,10 +135,15 @@
             </div>
             <div class="reaction-modal-body">
                 <div v-for="r in reactionModal.groups" :key="r.emoji">
-                    <div v-for="actor in r.actors" :key="actor" class="reaction-modal-row">
+                    <div v-for="actor in r.actors" :key="actor" class="reaction-modal-row"
+                        :class="{ 'removable': actor === $graffitiSession.value?.actor }"
+                        @click.stop="actor === $graffitiSession.value?.actor ? (reactToMessage(reactionModal.msgUrl, r.emoji), reactionModal.open = false) : null">
                         <graffiti-actor-to-handle :actor="actor" v-slot="{ handle }">
                             <div class="reaction-user-avatar">{{ (handle || '?')[0].toUpperCase() }}</div>
-                            <span class="reaction-user-name">{{ (handle || actor).replace('.graffiti.actor', '') }}</span>
+                            <div style="flex:1">
+                                <div class="reaction-user-name">{{ (handle || actor).replace('.graffiti.actor', '') }}</div>
+                                <div v-if="actor === $graffitiSession.value?.actor" class="reaction-remove-hint">Select to remove</div>
+                            </div>
                         </graffiti-actor-to-handle>
                         <span class="reaction-modal-emoji">{{ r.emoji }}</span>
                     </div>

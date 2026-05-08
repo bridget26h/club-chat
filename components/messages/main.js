@@ -119,8 +119,8 @@ function setup(props, { emit }) {
     });
 
     function openReactionPopup(emoji, e) {
-        emit('open-reactions', groupedReactions.value);
-    }    const reactionModal = ref({ open: false, groups: [] });
+        emit('open-reactions', { groups: groupedReactions.value, msgUrl: props.url });
+    }
 
     function openReactionModal(groups) {
         reactionModal.value = { open: true, groups };
@@ -151,16 +151,12 @@ function setup(props, { emit }) {
         reactionsAbove,
         onActionsEnter,
         groupedReactions,
-        reactionPopupOpen,
-        reactionPopupPos,
         openReactionPopup,
-        reactionModal,
-        openReactionModal,
     };
 }
 
 export default async () => ({
-    props: ["actor", "content", "published", "isOwner", "deleting", "saved", "edited", "reactions", "currentActor"],
+    props: ["actor", "content", "published", "isOwner", "deleting", "saved", "edited", "reactions", "currentActor", "url"],
     emits: ["delete", "save", "edit", "react", "open-reactions"],
     setup,
     template: await fetch(new URL("./index.html", import.meta.url)).then((r) => r.text()),

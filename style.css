@@ -1672,8 +1672,9 @@ body {
     background: rgba(0,0,0,0.4);
     z-index: 500;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
+    padding-top: 15vh;
 }
 
 .reaction-modal {
@@ -1748,4 +1749,16 @@ body {
 
 .reaction-modal-emoji {
     font-size: 1.2rem;
+}
+
+.reaction-remove-hint {
+    font-size: 0.78rem;
+    color: #9ca3af;
+    cursor: pointer;
+}
+.reaction-modal-row.removable {
+    cursor: pointer;
+}
+.reaction-modal-row.removable:hover {
+    background: #f3f4f6;
 }
