@@ -25,8 +25,12 @@
         <div id="app">Loading...</div>
         <template id="template">
             <div v-if="!$graffitiSession.value" class="login-screen">
-                <h1>ClubRoom</h1>
-                <button class="btn-primary" @click="$graffiti.login()">Log In</button>
+                <div class="login-card">
+                    <div class="login-icon"><i class="fa-regular fa-comment-dots"></i></div>
+                    <h1 class="login-title">ClubRoom</h1>
+                    <p class="login-subtitle">Find your club and join the conversation!</p>
+                    <button class="btn-login" @click="$graffiti.login()">Log In</button>
+                </div>
             </div>
 
             <div v-else class="app-layout">

@@ -1587,3 +1587,44 @@ body {
 }
 
 .btn-bottom-action.explore:hover { background: #dbeafe; }
+
+.login-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+}
+
+.login-icon {
+    font-size: 2.5rem;
+    color: #2563eb;
+    margin-bottom: 4px;
+}
+
+.login-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #111827;
+    letter-spacing: -0.02em;
+}
+
+.login-subtitle {
+    font-size: 0.95rem;
+    color: #6b7280;
+    margin-bottom: 8px;
+}
+
+.btn-login {
+    background: #2563eb;
+    color: #fff;
+    border: none;
+    border-radius: 999px;
+    padding: 12px 36px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s;
+    margin-top: 4px;
+}
+
+.btn-login:hover { background: #1d4ed8; }
