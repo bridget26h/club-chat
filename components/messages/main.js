@@ -118,6 +118,42 @@ function setup(props, { emit }) {
         emit('open-reactions', { groups: groupedReactions.value, msgUrl: props.url });
     }
 
+    function linkify(text) {
+        const escaped = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+        return escaped.replace(
+            /(https?:\/\/[^\s]+)/g,
+            '<a href="$1" target="_blank" rel="noopener noreferrer" style="color:inherit;text-decoration:underline;">$1</a>'
+        );
+    }
+    const linkPreview = ref(null);
+    const previewLoading = ref(false);
+
+    const urlMatch = computed(() => {
+        const match = (props.content || '').match(/(https?:\/\/[^\s]+)/);
+        return match ? match[1] : null;
+    });
+
+    async function fetchLinkPreview() {
+        if (!urlMatch.value || linkPreview.value) return;
+        previewLoading.value = true;
+        try {
+            const res = await fetch(`https://api.microlink.io?url=${encodeURIComponent(urlMatch.value)}`);
+            const data = await res.json();
+            if (data.status === 'success') {
+                linkPreview.value = {
+                    title: data.data.title,
+                    description: data.data.description,
+                    image: data.data.image?.url || null,
+                    domain: new URL(urlMatch.value).hostname.replace('www.', ''),
+                    url: urlMatch.value,
+                };
+            }
+        } catch (e) {}
+        previewLoading.value = false;
+    }
+
+    fetchLinkPreview();
+
     return {
         formattedTime,
         showActions,
@@ -144,6 +180,10 @@ function setup(props, { emit }) {
         groupedReactions,
         openReactionPopup,
         reactionsAbove,
+        linkify,
+        linkPreview,
+        previewLoading,
+        urlMatch,
     };
 }
 

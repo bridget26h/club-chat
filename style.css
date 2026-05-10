@@ -80,15 +80,20 @@ body {
 
 .btn-logout {
     font-size: 0.78rem;
-    background: none;
-    border: 1px solid #e5e7eb;
-    background: #fafafa;
-    border-radius: 6px;
-    padding: 4px 10px;
+    background: #f0f6ff;
+    border: 1px solid #b6d4fe;
+    border-radius: 999px;
+    padding: 6px 14px;
     cursor: pointer;
-    color: #6b7280;
+    color: #1a8cff;
+    font-weight: 500;
+    transition: all 0.15s;
 }
-.btn-logout:hover { background: #f3f4f6; }
+.btn-logout:hover {
+    background: #fef2f2;
+    border-color: #fecaca;
+    color: #ef4444;
+}
 
 .search-bar {
     display: flex;
@@ -1831,4 +1836,56 @@ body {
 .home-card-link:hover {
     background: #dbeafe;
     text-decoration: none;
+}
+.link-preview {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    background: #fff;
+    margin-top: 4px;
+    max-width: 280px;
+}
+.link-preview:hover {
+    background: #fff;
+    text-decoration: none;
+}
+
+.link-preview-img {
+    width: 100%;
+    height: 140px;
+    object-fit: cover;
+}
+
+.link-preview-body {
+    padding: 8px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.link-preview-domain {
+    font-size: 0.72rem;
+    color: #9ca3af;
+    text-transform: lowercase;
+}
+
+.link-preview-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #111827;
+    line-height: 1.3;
+}
+
+.link-preview-desc {
+    font-size: 0.75rem;
+    color: #6b7280;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }

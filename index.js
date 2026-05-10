@@ -163,6 +163,12 @@ function setup() {
         return map;
     });
 
+    function confirmLogout() {
+        if (confirm('Are you sure you want to log out?')) {
+            graffiti.logout(session.value);
+        }
+    }
+
     return {
         lastMessageByChannel,
         leaveClub,
@@ -182,6 +188,7 @@ function setup() {
         clubSearch,
         filteredJoinedClubs,
         savedItemsWithIcon,
+        confirmLogout,
     };
 }
 

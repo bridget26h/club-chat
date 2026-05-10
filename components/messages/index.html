@@ -18,7 +18,16 @@
                 </graffiti-actor-to-handle>
             </div>
             <div class="bubble-wrap">
-                <div class="bubble" :class="{ pressing: isPressing }">{{ content }}</div>
+                <div v-if="!urlMatch || content.trim() !== urlMatch" class="bubble" :class="{ pressing: isPressing }" v-html="linkify(content)"></div>
+                <div v-if="urlMatch && content.trim() === urlMatch && !linkPreview && !previewLoading" class="bubble" :class="{ pressing: isPressing }" v-html="linkify(content)"></div>
+                <a v-if="linkPreview" :href="linkPreview.url" target="_blank" rel="noopener noreferrer" class="link-preview">
+                    <img v-if="linkPreview.image" :src="linkPreview.image" class="link-preview-img" />
+                    <div class="link-preview-body">
+                        <span class="link-preview-domain">{{ linkPreview.domain }}</span>
+                        <span class="link-preview-title">{{ linkPreview.title }}</span>
+                        <span v-if="linkPreview.description" class="link-preview-desc">{{ linkPreview.description }}</span>
+                    </div>
+                </a>
                 <Transition name="check-fade">
                     <div v-if="showActions" class="msg-action-btns" @mouseenter="onActionsEnter">
                         <div class="msg-menu-wrap">
@@ -119,8 +128,16 @@
                             </div>
                         </div>
                     </Transition>
-                    <div class="bubble" :class="{ pressing: isPressing }">{{ content }}</div>
-                </div>
+                    <div v-if="!urlMatch || content.trim() !== urlMatch" class="bubble" :class="{ pressing: isPressing }" v-html="linkify(content)"></div>
+                    <a v-if="linkPreview" :href="linkPreview.url" target="_blank" rel="noopener noreferrer" class="link-preview">
+                        <img v-if="linkPreview.image" :src="linkPreview.image" class="link-preview-img" />
+                        <div class="link-preview-body">
+                            <span class="link-preview-domain">{{ linkPreview.domain }}</span>
+                            <span class="link-preview-title">{{ linkPreview.title }}</span>
+                            <span v-if="linkPreview.description" class="link-preview-desc">{{ linkPreview.description }}</span>
+                        </div>
+                    </a>
+                    <div v-if="urlMatch && content.trim() === urlMatch && !linkPreview && !previewLoading" class="bubble" :class="{ pressing: isPressing }" v-html="linkify(content)"></div>                </div>
                 <div v-if="groupedReactions.length > 0" class="reaction-display">
                     <button v-for="r in groupedReactions" :key="r.emoji"
                         class="reaction-pill" :class="{ mine: r.mine }"
