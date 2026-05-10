@@ -10,7 +10,7 @@
                     </graffiti-get-media>
                     <span v-else><i class="fa-regular fa-comment" style="color:#9ca3af"></i></span>
                 </div>
-                <button class="btn-club-title" @click="showInfo = !showInfo">{{ clubTitle }} ›</button>
+                <button class="btn-club-title" @click="showInfo = !showInfo">{{ clubTitle.length > 35 ? clubTitle.slice(0, 35) + '…' : clubTitle }} ›</button>
             </div>
         </div>
 
@@ -47,10 +47,10 @@
                     <div class="form-group">
                         <div style="display:flex; justify-content:space-between; align-items:center;">
                             <label>Name</label>
-                            <span v-if="editName.length >= 50" class="char-warning">⚠ Limit reached</span>
-                            <span v-else-if="editName.length >= 40" class="char-warning">{{ 50 - editName.length }} characters remaining</span>
+                            <span v-if="editName.length >= 35" class="char-warning">⚠ Limit reached</span>
+                            <span v-else-if="editName.length >= 25" class="char-warning">{{ 35 - editName.length }} characters remaining</span>
                         </div>
-                        <input type="text" v-model="editName" maxlength="50" />
+                        <input type="text" v-model="editName" maxlength="35" />
                     </div>
                     <div class="form-group">
                         <div style="display:flex; justify-content:space-between; align-items:center;">

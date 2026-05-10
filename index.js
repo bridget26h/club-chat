@@ -112,14 +112,18 @@ function setup() {
     const joinedClubs = computed(() => {
         const channelToInfo = new Map();
         for (const c of allClubObjects.value) {
-            channelToInfo.set(c.value.channel, {
-                title: c.value.title,
-                icon: c.value.icon || null,
-            });
+            const existing = channelToInfo.get(c.value.channel);
+            if (!existing || c.value.published > existing.published) {
+                channelToInfo.set(c.value.channel, {
+                    title: c.value.title,
+                    icon: c.value.icon || null,
+                    published: c.value.published,
+                });
+            }
         }
         return joinObjects.value.map((obj) => ({
             channel: obj.value.target,
-            title: obj.value.title || channelToInfo.get(obj.value.target)?.title || "Unknown Club",
+            title: channelToInfo.get(obj.value.target)?.title || "Unknown Club",
             icon: channelToInfo.get(obj.value.target)?.icon || null,
         }));
     });
