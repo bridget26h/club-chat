@@ -53,9 +53,15 @@ function setup(props) {
             if (messageInput.value) {
                 messageInput.value.style.height = 'auto';
             }
+            scrollToBottom();
         } finally {
             isSending.value = false;
         }
+    }
+
+    function scrollToBottom() {
+        const wrap = document.querySelector('.messages-wrap');
+        if (wrap) wrap.scrollTop = 0;
     }
 
     function startEdit() {
