@@ -12,7 +12,6 @@ function setup(props, { emit }) {
     const editContent = ref('');
     const isPressing = ref(false);
     const menuAbove = ref(false);
-    const reactionsAbove = ref(false);
     let pressTimer = null;
     let leaveTimer = null;
 
@@ -67,8 +66,7 @@ function setup(props, { emit }) {
         menuOpen.value = false;
     }
 
-    function doReply() {
-    }
+    function doReply() {}
 
     function doReact(emoji) {
         emit('react', emoji);
@@ -87,12 +85,13 @@ function setup(props, { emit }) {
         }
     }
 
+    const reactionsAbove = ref(false);
     function toggleReactions(e) {
         showReactions.value = !showReactions.value;
         menuOpen.value = false;
         if (showReactions.value) {
             const rect = e.currentTarget.getBoundingClientRect();
-            reactionsAbove.value = rect.top > 100;
+            reactionsAbove.value = rect.top > 200;
             setTimeout(() => {
                 document.addEventListener('click', () => { showReactions.value = false; }, { once: true });
             }, 50);
@@ -102,9 +101,6 @@ function setup(props, { emit }) {
     function onActionsEnter() {
         clearTimeout(leaveTimer);
     }
-
-    const reactionPopupOpen = ref(false);
-    const reactionPopupPos = ref({ top: 0, left: 0 });
 
     const groupedReactions = computed(() => {
         const map = new Map();
@@ -120,10 +116,6 @@ function setup(props, { emit }) {
 
     function openReactionPopup(emoji, e) {
         emit('open-reactions', { groups: groupedReactions.value, msgUrl: props.url });
-    }
-
-    function openReactionModal(groups) {
-        reactionModal.value = { open: true, groups };
     }
 
     return {
@@ -148,10 +140,10 @@ function setup(props, { emit }) {
         doReply,
         doReact,
         menuAbove,
-        reactionsAbove,
         onActionsEnter,
         groupedReactions,
         openReactionPopup,
+        reactionsAbove,
     };
 }
 

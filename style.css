@@ -446,6 +446,7 @@ body {
 }
 
 .messages-wrap {
+    overflow-x: clip;
     flex: 1;
     overflow-y: auto;
     padding: 10px 24px 20px;
@@ -1441,8 +1442,8 @@ body {
 
 .msg-menu-wrap {
     position: relative;
+    overflow: visible;
 }
-
 .msg-icon-btn {
     background: none;
     border: none;
@@ -1515,13 +1516,17 @@ body {
     padding: 4px 8px;
     box-shadow: 0 4px 24px rgba(0,0,0,0.15);
     white-space: nowrap;
-    z-index: 50;
+    z-index: 200;
+}
+
+.reaction-bar-right {
+    left: auto;
+    right: 0;
 }
 .reaction-bar.above {
     top: auto;
     bottom: calc(100% + 6px);
 }
-.reaction-bar-right { left: auto; right: 0; }
 
 .reaction-btn {
     background: none;

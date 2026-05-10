@@ -26,7 +26,7 @@
                                 <i class="fa-regular fa-face-smile"></i>
                             </button>
                             <Transition name="dropdown">
-                                <div v-if="showReactions" class="reaction-bar" :class="{ above: reactionsAbove, 'reaction-bar-right': isOwner }" @click.stop>
+                                <div v-if="showReactions" class="reaction-bar" :class="{ 'above': reactionsAbove, 'reaction-bar-right': isOwner }" @click.stop>
                                     <button class="reaction-btn" @click.stop="doReact('❤️')">❤️</button>
                                     <button class="reaction-btn" @click.stop="doReact('😆')">😆</button>
                                     <button class="reaction-btn" @click.stop="doReact('😮')">😮</button>
@@ -44,7 +44,8 @@
                                 <i class="fa fa-ellipsis-v"></i>
                             </button>
                             <Transition name="dropdown">
-                                <div v-if="menuOpen" class="msg-menu" :class="{ above: menuAbove, 'msg-menu-left': isOwner }" @click.stop>                                    <button @click="doSave">
+                                <div v-if="menuOpen" class="msg-menu" :class="{ above: menuAbove }" @click.stop>
+                                    <button @click="doSave">
                                         <i class="fa fa-bookmark"></i>
                                         {{ saved ? 'Unsave' : 'Save' }}
                                     </button>
@@ -55,11 +56,8 @@
                 </Transition>
             </div>
             <div v-if="groupedReactions.length > 0" class="reaction-display">
-                <button
-                    v-for="r in groupedReactions"
-                    :key="r.emoji"
-                    class="reaction-pill"
-                    :class="{ mine: r.mine }"
+                <button v-for="r in groupedReactions" :key="r.emoji"
+                    class="reaction-pill" :class="{ mine: r.mine }"
                     @click.stop="openReactionPopup(r.emoji, $event)">
                     {{ r.emoji }} {{ r.count }}
                 </button>
@@ -86,7 +84,8 @@
                                     <i class="fa fa-ellipsis-v"></i>
                                 </button>
                                 <Transition name="dropdown">
-                                    <div v-if="menuOpen" class="msg-menu" :class="{ above: menuAbove, 'msg-menu-left': isOwner }" @click.stop>                                        <button @click="startEdit">
+                                    <div v-if="menuOpen" class="msg-menu" :class="{ above: menuAbove, 'msg-menu-left': true }" @click.stop>
+                                        <button @click="startEdit">
                                             <i class="fa fa-pencil"></i> Edit
                                         </button>
                                         <button @click="doSave">
@@ -108,7 +107,8 @@
                                     <i class="fa-regular fa-face-smile"></i>
                                 </button>
                                 <Transition name="dropdown">
-                                    <div v-if="showReactions" class="reaction-bar" :class="{ above: reactionsAbove, 'reaction-bar-right': isOwner }" @click.stop>                                        <button class="reaction-btn" @click.stop="doReact('❤️')">❤️</button>
+                                    <div v-if="showReactions" class="reaction-bar" :class="{ 'above': reactionsAbove, 'reaction-bar-right': isOwner }" @click.stop>
+                                        <button class="reaction-btn" @click.stop="doReact('❤️')">❤️</button>
                                         <button class="reaction-btn" @click.stop="doReact('😆')">😆</button>
                                         <button class="reaction-btn" @click.stop="doReact('😮')">😮</button>
                                         <button class="reaction-btn" @click.stop="doReact('😢')">😢</button>
@@ -122,11 +122,8 @@
                     <div class="bubble" :class="{ pressing: isPressing }">{{ content }}</div>
                 </div>
                 <div v-if="groupedReactions.length > 0" class="reaction-display">
-                    <button
-                        v-for="r in groupedReactions"
-                        :key="r.emoji"
-                        class="reaction-pill"
-                        :class="{ mine: r.mine }"
+                    <button v-for="r in groupedReactions" :key="r.emoji"
+                        class="reaction-pill" :class="{ mine: r.mine }"
                         @click.stop="openReactionPopup(r.emoji, $event)">
                         {{ r.emoji }} {{ r.count }}
                     </button>
