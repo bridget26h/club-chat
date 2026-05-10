@@ -48,17 +48,22 @@ function setup(props) {
         isSending.value = true;
         try {
             await graffiti.post({ value: { content: myMessage.value.trim(), published: Date.now() }, channels: [clubId.value] }, session.value);
+            await graffiti.post({
+                value: {
+                    activity: "LastMessage",
+                    channel: clubId.value,
+                    published: Date.now(),
+                },
+                channels: [DISCOVERY_CHANNEL],
+            }, session.value);
             myMessage.value = "";
             await nextTick();
-            if (messageInput.value) {
-                messageInput.value.style.height = 'auto';
-            }
+            if (messageInput.value) messageInput.value.style.height = 'auto';
             scrollToBottom();
         } finally {
             isSending.value = false;
         }
     }
-
     function scrollToBottom() {
         const wrap = document.querySelector('.messages-wrap');
         if (wrap) wrap.scrollTop = 0;

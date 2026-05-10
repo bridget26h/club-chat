@@ -121,12 +121,19 @@ function setup() {
                 });
             }
         }
-        return joinObjects.value.map((obj) => ({
-            channel: obj.value.target,
-            title: channelToInfo.get(obj.value.target)?.title || "Unknown Club",
-            icon: channelToInfo.get(obj.value.target)?.icon || null,
-        }));
-    });
+        return joinObjects.value
+            .map((obj) => ({
+                channel: obj.value.target,
+                title: channelToInfo.get(obj.value.target)?.title || "Unknown Club",
+                icon: channelToInfo.get(obj.value.target)?.icon || null,
+                joinedAt: obj.value.published || 0,
+            }))
+            .toSorted((a, b) => {
+                const aTime = lastMessageByChannel.value.get(a.channel) || a.joinedAt || 0;
+                const bTime = lastMessageByChannel.value.get(b.channel) || b.joinedAt || 0;
+                return bTime - aTime;
+            });
+        });
 
     const filteredJoinedClubs = computed(() => {
         const q = clubSearch.value.toLowerCase();
@@ -140,7 +147,24 @@ function setup() {
         router.push("/");
     }
 
+    const { objects: lastMessageObjects } = useGraffitiDiscover(
+        [DISCOVERY_CHANNEL],
+        { properties: { value: { required: ["activity","channel","published"], properties: { activity: { const: "LastMessage" }, channel: { type: "string" }, published: { type: "number" } } } } }
+    );
+
+    const lastMessageByChannel = computed(() => {
+        const map = new Map();
+        for (const obj of lastMessageObjects.value) {
+            const existing = map.get(obj.value.channel);
+            if (!existing || obj.value.published > existing) {
+                map.set(obj.value.channel, obj.value.published);
+            }
+        }
+        return map;
+    });
+
     return {
+        lastMessageByChannel,
         leaveClub,
         joinedClubs,
         calendarOffset,

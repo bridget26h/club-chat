@@ -478,13 +478,13 @@ body {
     outline: none;
     background: #f9fafb;
 }
-.message-input-row input:focus { border-color: #2563eb; background: #fff; }
+.message-input-row input:focus { border-color: #1a8cff; background: #fff; }
 .message-input-row input::placeholder { color: #9ca3af; }
 .btn-send {
     width: 36px;
     height: 36px;
     border-radius: 50%;
-    background: #2563eb;
+    background: #1a8cff;
     color: #fff;
     border: none;
     cursor: pointer;
