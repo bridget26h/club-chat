@@ -33,16 +33,13 @@
                         </div>
                     </div>
                 </div>
-
                 <p class="club-info-desc">{{ clubDescription || (!isCreator ? 'No description.' : 'No description. Click Edit Club to add one.') }}</p>
                 <div class="club-info-divider"></div>
-
                 <div v-if="!isEditing" class="club-info-actions">
                     <button class="btn-secondary small" v-if="isCreator" @click="startEdit">Edit Club</button>
                     <button class="btn-leave-popup" @click="confirmLeave">Leave Club</button>
                     <button class="btn-danger small" v-if="isCreator" @click="confirmDelete">Delete Club</button>
                 </div>
-
                 <div v-if="isEditing" class="club-edit-form">
                     <div class="form-group">
                         <div style="display:flex; justify-content:space-between; align-items:center;">
@@ -74,7 +71,6 @@
                         </button>
                     </div>
                 </div>
-
                 <button class="club-info-close" @click="showInfo = false">✕</button>
             </div>
         </Transition>
@@ -95,13 +91,14 @@
                         :edited="item.msg.value.edited"
                         :reactions="reactionsByMessage.get(item.msg.url) || []"
                         :current-actor="$graffitiSession.value?.actor"
+                        :reply-to="item.msg.value.replyTo"
+                        :url="item.msg.url"
                         @delete="deleteMessage(item.msg)"
                         @save="saveMessage(item.msg)"
                         @edit="editMessage(item.msg, $event)"
                         @react="reactToMessage(item.msg.url, $event)"
-                        :message-url="item.msg.url"
-                        @open-reactions="openReactionModal($event)"
-                        :url="item.msg.url">
+                        @reply="handleReply"
+                        @open-reactions="openReactionModal($event)">
                     </message-item>
                 </template>
                 <div v-if="sortedMessages.length === 0" class="empty-chat">
@@ -110,6 +107,17 @@
                 </div>
             </template>
             <div id="messages-anchor" style="height:1px; overflow-anchor: auto;"></div>
+        </div>
+
+        <div v-if="replyingTo" class="reply-preview">
+            <div class="reply-preview-bar"></div>
+            <div class="reply-preview-body">
+                <graffiti-actor-to-handle :actor="replyingTo.actor" v-slot="{ handle }">
+                    <span class="reply-preview-name">Replying to {{ (handle || '').replace('.graffiti.actor','') }}</span>
+                </graffiti-actor-to-handle>
+                <span class="reply-preview-text">{{ replyingTo.content }}</span>
+            </div>
+            <button class="reply-preview-close" @click="clearReply">✕</button>
         </div>
 
         <form class="message-input-row" @submit.prevent="sendMessage">

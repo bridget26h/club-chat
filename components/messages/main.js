@@ -66,7 +66,11 @@ function setup(props, { emit }) {
         menuOpen.value = false;
     }
 
-    function doReply() {}
+    function doReply() {
+        emit('reply', { actor: props.actor, content: props.content, url: props.url });
+        menuOpen.value = false;
+        showActions.value = false;
+    }
 
     function doReact(emoji) {
         emit('react', emoji);
@@ -125,6 +129,7 @@ function setup(props, { emit }) {
             '<a href="$1" target="_blank" rel="noopener noreferrer" style="color:inherit;text-decoration:underline;">$1</a>'
         );
     }
+
     const linkPreview = ref(null);
     const previewLoading = ref(false);
 
@@ -184,12 +189,13 @@ function setup(props, { emit }) {
         linkPreview,
         previewLoading,
         urlMatch,
+        replyTo: computed(() => props.replyTo),
     };
 }
 
 export default async () => ({
-    props: ["actor", "content", "published", "isOwner", "deleting", "saved", "edited", "reactions", "currentActor", "url"],
-    emits: ["delete", "save", "edit", "react", "open-reactions"],
+    props: ["actor", "content", "published", "isOwner", "deleting", "saved", "edited", "reactions", "currentActor", "url", "replyTo"],
+    emits: ["delete", "save", "edit", "react", "open-reactions", "reply"],
     setup,
     template: await fetch(new URL("./index.html", import.meta.url)).then((r) => r.text()),
 });

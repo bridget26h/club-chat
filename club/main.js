@@ -43,11 +43,34 @@ function setup(props) {
         el.style.height = Math.min(el.scrollHeight, 120) + 'px';
     }
 
+    const replyingTo = ref(null);
+
+    function handleReply(msg) {
+        replyingTo.value = msg;
+    }
+
+    function clearReply() {
+        replyingTo.value = null;
+    }
+
     async function sendMessage() {
         if (!myMessage.value.trim() || !clubId.value) return;
         isSending.value = true;
         try {
-            await graffiti.post({ value: { content: myMessage.value.trim(), published: Date.now() }, channels: [clubId.value] }, session.value);
+            await graffiti.post({
+                value: {
+                    content: myMessage.value.trim(),
+                    published: Date.now(),
+                    ...(replyingTo.value ? {
+                        replyTo: {
+                            actor: replyingTo.value.actor,
+                            content: replyingTo.value.content,
+                            url: replyingTo.value.url,
+                        }
+                    } : {})
+                },
+                channels: [clubId.value]
+            }, session.value);
             await graffiti.post({
                 value: {
                     activity: "LastMessage",
@@ -57,6 +80,7 @@ function setup(props) {
                 channels: [DISCOVERY_CHANNEL],
             }, session.value);
             myMessage.value = "";
+            replyingTo.value = null;
             await nextTick();
             if (messageInput.value) messageInput.value.style.height = 'auto';
             scrollToBottom();
@@ -64,6 +88,7 @@ function setup(props) {
             isSending.value = false;
         }
     }
+
     function scrollToBottom() {
         const wrap = document.querySelector('.messages-wrap');
         if (wrap) wrap.scrollTop = 0;
@@ -80,14 +105,13 @@ function setup(props) {
     function handleEditFile(event) {
         const file = event.target.files[0];
         if (file) {
-        editFile.value = file;
-        editPreviewUrl.value = URL.createObjectURL(file);
+            editFile.value = file;
+            editPreviewUrl.value = URL.createObjectURL(file);
         }
     }
 
     async function saveEdit() {
         if (!clubObject.value) return;
-
         const existingNames = allClubObjects.value
             .filter(c => c.value.channel !== clubId.value)
             .map(c => c.value.title.toLowerCase().trim());
@@ -95,7 +119,6 @@ function setup(props) {
             alert(`A club named "${editName.value.trim()}" already exists. Please choose a different name.`);
             return;
         }
-
         isSavingEdit.value = true;
         try {
             const newValue = {
@@ -106,18 +129,13 @@ function setup(props) {
                 description: editDescription.value.trim(),
                 published: Date.now(),
             };
-
             if (editFile.value) {
                 newValue.icon = await graffiti.postMedia({ data: editFile.value }, session.value);
             } else if (clubIcon.value) {
                 newValue.icon = clubIcon.value;
             }
-
             await graffiti.delete(clubObject.value, session.value);
-            await graffiti.post({
-                value: newValue,
-                channels: [DISCOVERY_CHANNEL],
-            }, session.value);
+            await graffiti.post({ value: newValue, channels: [DISCOVERY_CHANNEL] }, session.value);
             isEditing.value = false;
         } finally {
             isSavingEdit.value = false;
@@ -148,13 +166,14 @@ function setup(props) {
 
     const { objects: messageObjects, isFirstPoll: areMessagesLoading } = useGraffitiDiscover(
         () => clubId.value ? [clubId.value] : [],
-        { properties: { value: { required: ["content","published"], properties: { content: { type: "string" }, published: { type: "number" } } } } },
+        { properties: { value: { required: ["content","published"], properties: { content: { type: "string" }, published: { type: "number" }, replyTo: { type: "object" } } } } },
         undefined, true
     );
 
     const sortedMessages = computed(() =>
         messageObjects.value.toSorted((a, b) => a.value.published - b.value.published)
     );
+
     const groupedMessages = computed(() => {
         const groups = [];
         let currentDate = null;
@@ -171,17 +190,12 @@ function setup(props) {
                 let label;
                 if (msgDate === today.toDateString()) {
                     label = "Today at " + date.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
-                }
-                else if (msgDate === yesterday.toDateString()) {
+                } else if (msgDate === yesterday.toDateString()) {
                     label = "Yesterday at " + date.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
-                }
-                else if (date > sevenDaysAgo) {
-                    label = date.toLocaleDateString([], { weekday: 'long' }) +
-                            " at " + date.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
-                }
-                else {
-                    label = date.toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' }) +
-                            " at " + date.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+                } else if (date > sevenDaysAgo) {
+                    label = date.toLocaleDateString([], { weekday: 'long' }) + " at " + date.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+                } else {
+                    label = date.toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' }) + " at " + date.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
                 }
                 groups.push({ type: 'label', label });
             }
@@ -195,6 +209,7 @@ function setup(props) {
         () => saveActorChannel.value ? [saveActorChannel.value] : [],
         { properties: { value: { required: ["activity","messageUrl"], properties: { activity: { const: "Save" }, messageUrl: { type: "string" } } } } }
     );
+
     const { objects: reactionObjects } = useGraffitiDiscover(
         () => clubId.value ? [clubId.value] : [],
         { properties: { value: { required: ["activity","messageUrl","emoji"], properties: { activity: { const: "React" }, messageUrl: { type: "string" }, emoji: { type: "string" } } } } }
@@ -233,11 +248,13 @@ function setup(props) {
             channels: [clubId.value],
         }, session.value);
     }
+
     const reactionModal = ref({ open: false, groups: [], msgUrl: null });
 
     function openReactionModal({ groups, msgUrl }) {
         reactionModal.value = { open: true, groups, msgUrl };
     }
+
     const savedUrls = computed(() => {
         const s = new Set();
         for (const obj of savedObjects.value) s.add(obj.value.messageUrl);
@@ -268,11 +285,12 @@ function setup(props) {
     async function deleteMessage(msg) {
         isDeleting.value.add(msg.url);
         try {
-        await graffiti.delete(msg, session.value);
+            await graffiti.delete(msg, session.value);
         } finally {
-        isDeleting.value.delete(msg.url);
+            isDeleting.value.delete(msg.url);
         }
     }
+
     async function editMessage(msg, newContent) {
         await graffiti.delete(msg, session.value);
         await graffiti.post({
@@ -338,6 +356,9 @@ function setup(props) {
         reactToMessage,
         reactionModal,
         openReactionModal,
+        replyingTo,
+        handleReply,
+        clearReply,
     };
 }
 
