@@ -45,40 +45,42 @@
                         <span class="search-icon"><i class="fa fa-search search-icon"></i></span>
                         <input type="text" v-model="clubSearch" placeholder="Search your clubs" />
                     </div>
-                    <div class="club-grid">
-                        <router-link
-                            v-for="club of filteredJoinedClubs"
-                            :key="club.channel"
-                            :to="`/club/${club.channel}`"
-                            class="club-card"
-                            :class="{ active: $route.params.clubId === club.channel }"
-                        >
-                            <div class="club-card-icon">
-                                <graffiti-get-media
-                                    v-if="club.icon"
-                                    :url="club.icon"
-                                    :accept="{ types: ['image/*'] }"
-                                    v-slot="{ media }"
-                                >
-                                    <img v-if="media" :src="media.dataUrl" class="club-card-img" />
+                    <div class="club-grid-wrap">
+                        <div class="club-grid">
+                            <router-link
+                                v-for="club of filteredJoinedClubs"
+                                :key="club.channel"
+                                :to="`/club/${club.channel}`"
+                                class="club-card"
+                                :class="{ active: $route.params.clubId === club.channel }"
+                            >
+                                <div class="club-card-icon">
+                                    <graffiti-get-media
+                                        v-if="club.icon"
+                                        :url="club.icon"
+                                        :accept="{ types: ['image/*'] }"
+                                        v-slot="{ media }"
+                                    >
+                                        <img v-if="media" :src="media.dataUrl" class="club-card-img" />
+                                        <span v-else><i class="fa-regular fa-comment" style="color:#9ca3af"></i></span>
+                                    </graffiti-get-media>
                                     <span v-else><i class="fa-regular fa-comment" style="color:#9ca3af"></i></span>
-                                </graffiti-get-media>
-                                <span v-else><i class="fa-regular fa-comment" style="color:#9ca3af"></i></span>
-                            </div>
-                            <div style="display:flex; flex-direction:column; min-width:0; flex:1; gap:2px;">
-                                <div style="display:flex; justify-content:space-between; align-items:baseline; gap:8px;">
-                                    <span class="club-card-name">{{ club.title }}</span>
-                                    <span style="font-size:0.72rem; color:#9ca3af; flex-shrink:0;">
-                                        {{ latestMessageByChannel.get(club.channel)?.published
-                                            ? new Date(latestMessageByChannel.get(club.channel).published).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})
-                                            : '' }}
-                                    </span>
                                 </div>
-                                <div class="club-card-preview">{{ latestMessageByChannel.get(club.channel)?.content || '' }}</div>
+                                <div style="display:flex; flex-direction:column; min-width:0; flex:1; gap:2px;">
+                                    <div style="display:flex; justify-content:space-between; align-items:baseline; gap:8px;">
+                                        <span class="club-card-name">{{ club.title }}</span>
+                                        <span style="font-size:0.72rem; color:#9ca3af; flex-shrink:0;">
+                                            {{ latestMessageByChannel.get(club.channel)?.published
+                                                ? new Date(latestMessageByChannel.get(club.channel).published).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})
+                                                : '' }}
+                                        </span>
+                                    </div>
+                                    <div class="club-card-preview">{{ latestMessageByChannel.get(club.channel)?.content || '' }}</div>
+                                </div>
+                            </router-link>
+                            <div v-if="filteredJoinedClubs.length === 0" class="club-grid-empty">
+                                No clubs yet.
                             </div>
-                        </router-link>
-                        <div v-if="filteredJoinedClubs.length === 0" class="club-grid-empty">
-                            No clubs yet.
                         </div>
                     </div>
                     <div class="bottom-actions">
