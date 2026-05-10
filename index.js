@@ -162,6 +162,23 @@ function setup() {
         }
         return map;
     });
+    const { objects: previewMessageObjects } = useGraffitiDiscover(
+        () => joinObjects.value.map(o => o.value.target),
+        { properties: { value: { required: ["content","published"], properties: { content: { type: "string" }, published: { type: "number" } } } } }
+    );
+
+    const latestMessageByChannel = computed(() => {
+        const map = new Map();
+        for (const msg of previewMessageObjects.value) {
+            const channel = msg.channels?.[0];
+            if (!channel) continue;
+            const existing = map.get(channel);
+            if (!existing || msg.value.published > existing.published) {
+                map.set(channel, { content: msg.value.content, published: msg.value.published });
+            }
+        }
+        return map;
+    });
 
     function confirmLogout() {
         if (confirm('Are you sure you want to log out?')) {
@@ -170,6 +187,7 @@ function setup() {
     }
 
     return {
+        latestMessageByChannel,
         lastMessageByChannel,
         leaveClub,
         joinedClubs,
