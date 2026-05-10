@@ -35,15 +35,22 @@
 
             <div v-else class="app-layout">
                 <aside class="sidebar">
-
                     <div class="sidebar-top">
                         <router-link to="/" class="sidebar-logo">ClubRoom</router-link>
                         <button class="btn-logout" @click="confirmLogout">Log Out</button>
                     </div>
-
                     <div class="search-bar">
                         <span class="search-icon"><i class="fa fa-search search-icon"></i></span>
                         <input type="text" v-model="clubSearch" placeholder="Search your clubs" />
+                    </div>
+
+                    <div class="bottom-actions">
+                        <router-link to="/explore" class="btn-bottom-action explore">
+                            <i class="fa fa-compass"></i> Explore
+                        </router-link>
+                        <router-link to="/create" class="btn-bottom-action">
+                            <i class="fa fa-plus"></i> Create
+                        </router-link>
                     </div>
                     <div class="club-grid-wrap">
                         <div class="club-grid">
@@ -82,14 +89,6 @@
                                 No clubs yet.
                             </div>
                         </div>
-                    </div>
-                    <div class="bottom-actions">
-                        <router-link to="/explore" class="btn-bottom-action explore">
-                            <i class="fa fa-compass"></i> Explore
-                        </router-link>
-                        <router-link to="/create" class="btn-bottom-action">
-                            <i class="fa fa-plus"></i> Create
-                        </router-link>
                     </div>
 
                     <div class="sidebar-bottom">
