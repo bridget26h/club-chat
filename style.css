@@ -1981,46 +1981,6 @@ body {
 }
 .reply-preview-close:hover { color: #374151; }
 
-.reply-quote {
-    display: flex;
-    align-items: stretch;
-    gap: 8px;
-    padding: 6px 10px;
-    background: rgba(0,0,0,0.06);
-    border-radius: 10px;
-    font-size: 0.78rem;
-    max-width: 100%;
-    margin-bottom: 2px;
-}
-.reply-quote-bar {
-    width: 3px;
-    background: #1a8cff;
-    border-radius: 2px;
-    flex-shrink: 0;
-    min-height: 28px;
-}
-.reply-quote-body {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    min-width: 0;
-}
-.reply-quote-name {
-    font-weight: 700;
-    color: #1a8cff;
-    font-size: 0.75rem;
-}
-.reply-quote-text {
-    color: #6b7280;
-    font-size: 0.75rem;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 240px;
-}
-.mine .reply-quote {
-    background: rgba(0,0,0,0.15);
-}
 .mine .reply-quote-name {
     color: rgba(255,255,255,0.9);
 }
@@ -2029,4 +1989,39 @@ body {
 }
 .mine .reply-quote-bar {
     background: rgba(255,255,255,0.8);
+}
+
+
+.reply-quote {
+    background: #e8e8e8;
+    border-radius: 14px;
+    padding: 8px 12px;
+    font-size: 0.78rem;
+    color: #555;
+    max-width: 100%;
+    margin-bottom: 2px;
+    line-height: 1.4;
+}
+
+/* quoted message is someone else's — shown in your own bubble */
+.mine .reply-quote {
+    background: #ebebeb;
+    color: #8e8f91;
+}
+
+/* quoted message is yours — shown in your own bubble (replying to yourself) */
+.mine .reply-quote.reply-quote-own {
+    background: #89c4ff;
+    color: #fff;
+}
+
+.reply-quote-label {
+    font-size: 0.7rem;
+    color: #9ca3af;
+    padding: 0 4px;
+    margin-bottom: 2px;
+}
+
+.mine .reply-quote-label {
+    text-align: right;
 }

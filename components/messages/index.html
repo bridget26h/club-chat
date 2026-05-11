@@ -19,15 +19,18 @@
             </div>
             <div class="bubble-wrap">
                 <div class="bubble-col">
-                    <div v-if="replyTo" class="reply-quote">
-                        <div class="reply-quote-bar"></div>
-                        <div class="reply-quote-body">
+                    <template v-if="replyTo">
+                        <div class="reply-quote-label">
                             <graffiti-actor-to-handle :actor="replyTo.actor" v-slot="{ handle }">
-                                <span class="reply-quote-name">{{ (handle || '').replace('.graffiti.actor','') }}</span>
+                                {{ replyTo.actor === currentActor
+                                    ? 'Replied to themselves'
+                                    : replyTo.actor === actor
+                                        ? 'Replied to you'
+                                        : 'Replied to ' + (handle || '').replace('.graffiti.actor','') }}
                             </graffiti-actor-to-handle>
-                            <span class="reply-quote-text">{{ replyTo.content }}</span>
                         </div>
-                    </div>
+                        <div class="reply-quote" :class="{ 'reply-quote-own': replyTo.actor === currentActor }">{{ replyTo.content }}</div>
+                    </template>
                     <div v-if="!urlMatch || content.trim() !== urlMatch" class="bubble" :class="{ pressing: isPressing }" v-html="linkify(content)"></div>
                     <div v-if="urlMatch && content.trim() === urlMatch && !linkPreview && !previewLoading" class="bubble" :class="{ pressing: isPressing }" v-html="linkify(content)"></div>
                     <a v-if="linkPreview" :href="linkPreview.url" target="_blank" rel="noopener noreferrer" class="link-preview">
@@ -140,15 +143,16 @@
                         </div>
                     </Transition>
                     <div class="bubble-col">
-                        <div v-if="replyTo" class="reply-quote">
-                            <div class="reply-quote-bar"></div>
-                            <div class="reply-quote-body">
+                        <template v-if="replyTo">
+                            <div class="reply-quote-label">
                                 <graffiti-actor-to-handle :actor="replyTo.actor" v-slot="{ handle }">
-                                    <span class="reply-quote-name">{{ (handle || '').replace('.graffiti.actor','') }}</span>
+                                    {{ replyTo.actor === currentActor
+                                        ? 'You replied to yourself'
+                                        : 'You replied to ' + (handle || '').replace('.graffiti.actor','') }}
                                 </graffiti-actor-to-handle>
-                                <span class="reply-quote-text">{{ replyTo.content }}</span>
                             </div>
-                        </div>
+                            <div class="reply-quote" :class="{ 'reply-quote-own': replyTo.actor === currentActor }">{{ replyTo.content }}</div>
+                        </template>
                         <div v-if="!urlMatch || content.trim() !== urlMatch" class="bubble" :class="{ pressing: isPressing }" v-html="linkify(content)"></div>
                         <a v-if="linkPreview" :href="linkPreview.url" target="_blank" rel="noopener noreferrer" class="link-preview">
                             <img v-if="linkPreview.image" :src="linkPreview.image" class="link-preview-img" />
