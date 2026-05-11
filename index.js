@@ -73,6 +73,21 @@ function setup() {
         { properties: { value: { required: ["activity","messageUrl","content","clubTitle"], properties: { activity: { const: "Save" }, messageUrl: { type: "string" }, content: { type: "string" }, clubTitle: { type: "string" } } } } }
     );
 
+    const savedSortField = ref("date");
+    const savedSortDir = ref("desc");
+    const savedFilterBy = ref("all");
+    const savedShowSort = ref(false);
+    const savedShowFilter = ref(false);
+
+    const savedFilterLabel = computed(() =>
+        savedFilterBy.value === 'all' ? 'Filter' : savedFilterBy.value
+    );
+
+    const savedClubOptions = computed(() => {
+        const titles = new Set(savedItems.value.map(i => i.value.clubTitle).filter(Boolean));
+        return [...titles].sort();
+    });
+
     const savedItemsWithIcon = computed(() => {
         const channelToIcon = new Map();
         for (const c of allClubObjects.value) {
@@ -84,6 +99,23 @@ function setup() {
                 clubIcon: channelToIcon.get(item.value.clubId) || null,
             }))
             .toSorted((a, b) => b.value.published - a.value.published);
+    });
+
+    const processedSavedItems = computed(() => {
+        let items = savedItemsWithIcon.value;
+        if (savedFilterBy.value !== 'all') {
+            items = items.filter(i => i.value.clubTitle === savedFilterBy.value);
+        }
+        if (savedSortField.value === 'club') {
+            items = [...items].sort((a, b) => savedSortDir.value === 'asc'
+                ? (a.value.clubTitle || '').localeCompare(b.value.clubTitle || '')
+                : (b.value.clubTitle || '').localeCompare(a.value.clubTitle || ''));
+        } else {
+            items = [...items].sort((a, b) => savedSortDir.value === 'asc'
+                ? a.value.published - b.value.published
+                : b.value.published - a.value.published);
+        }
+        return items;
     });
 
     async function unsaveItem(item) {
@@ -207,6 +239,14 @@ function setup() {
         filteredJoinedClubs,
         savedItemsWithIcon,
         confirmLogout,
+        savedSortField,
+        savedSortDir,
+        savedFilterBy,
+        savedShowSort,
+        savedShowFilter,
+        savedFilterLabel,
+        savedClubOptions,
+        processedSavedItems,
     };
 }
 

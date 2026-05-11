@@ -27,7 +27,7 @@ body {
     height: 100vh;
     border-right: 1px solid #e5e7eb;
     padding: 20px 16px 0;
-    overflow: hidden;
+    overflow: visible;
     display: flex;
     flex-direction: column;
     gap: 12px;
@@ -40,35 +40,43 @@ body {
     align-items: center;
 }
 
-/* Tab content container fills all remaining height */
-.sidebar-tab-content {
-    flex: 1;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-}
-
 /* Each panel fills the full tab content area */
 .sidebar-panel {
     flex: 1;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
     gap: 12px;
     padding-bottom: 16px;
+    min-height: 0;
+    overflow: visible;
+}
+
+/* Tab content container fills all remaining height */
+.sidebar-tab-content {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: visible;
 }
 
 .saved-panel {
     flex: 1;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
+    overflow: visible;
+    min-height: 0;
 }
 .saved-scroll {
     flex: 1;
-    overflow-y: auto;
+    overflow-y: scroll;
+    min-height: 0;
 }
-
+.saved-scroll::-webkit-scrollbar { width: 1px; }
+.saved-scroll::-webkit-scrollbar-thumb { background: rgba(0, 0, 0, 0.021); border-radius: 2px; }
+.saved-scroll::-webkit-scrollbar-track { background: transparent; margin: 60px 0;}
+.saved-scroll::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
+.saved-scroll { scrollbar-width: thin; scrollbar-color: #d1d5db transparent; }
 .saved-title {
     font-size: 1rem;
     font-weight: 700;
@@ -164,6 +172,7 @@ body {
     flex-direction: column;
     gap: 0;
     flex: 1;
+    min-height: 0;
     overflow-y: scroll;
     scrollbar-width: thin;
     scrollbar-color: #d1d5db transparent;
@@ -290,8 +299,8 @@ body {
     margin-bottom: -1px;
 }
 .sidebar-tabs button.active {
-    border-bottom-color: #1a8cff;
-    color: #1a8cff;
+    border-bottom-color: #2563eb;
+    color: #2563eb;
     font-weight: 600;
 }
 .calendar-section {

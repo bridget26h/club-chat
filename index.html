@@ -41,7 +41,7 @@
                     </div>
 
                     <div class="sidebar-tabs">
-                        <button :class="{ active: sidebarTab === 'chats' }" @click="sidebarTab = 'chats'">Clubs</button>
+                        <button :class="{ active: sidebarTab === 'chats' }" @click="sidebarTab = 'chats'">Chats</button>
                         <button :class="{ active: sidebarTab === 'calendar' }" @click="sidebarTab = 'calendar'">Date</button>
                         <button :class="{ active: sidebarTab === 'saved' }" @click="sidebarTab = 'saved'">Saved</button>
                     </div>
@@ -125,10 +125,54 @@
                         <!-- SAVED TAB -->
                         <div v-if="sidebarTab === 'saved'" class="sidebar-panel">
                             <div class="saved-panel">
-                                <p class="saved-title">Saved Items</p>
+                                <div v-if="savedShowSort || savedShowFilter" class="popup-overlay" @click="savedShowSort = false; savedShowFilter = false"></div>
+                                <div class="explore-toolbar" style="padding: 4px 0 2px; flex-shrink:0;">
+                                    <div class="toolbar-btn-wrap">
+                                        <button class="toolbar-btn" :class="{ active: savedFilterBy !== 'all' }" @click.stop="savedShowFilter = !savedShowFilter; savedShowSort = false">
+                                            <span class="toolbar-icon">&#9776;</span> {{ savedFilterLabel }}
+                                        </button>
+                                        <Transition name="dropdown">
+                                            <div v-if="savedShowFilter" class="toolbar-dropdown" @click.stop>
+                                                <p class="dropdown-section">Filter by club</p>
+                                                <button :class="{ checked: savedFilterBy === 'all' }" @click="savedFilterBy = 'all'; savedShowFilter = false">
+                                                    <span class="check">{{ savedFilterBy === 'all' ? '✓' : '' }}</span> All clubs
+                                                </button>
+                                                <button v-for="club in savedClubOptions" :key="club" :class="{ checked: savedFilterBy === club }" @click="savedFilterBy = club; savedShowFilter = false">
+                                                    <span class="check">{{ savedFilterBy === club ? '✓' : '' }}</span> {{ club }}
+                                                </button>
+                                            </div>
+                                        </Transition>
+                                    </div>
+                                    <div class="toolbar-btn-wrap">
+                                        <button class="toolbar-btn" @click.stop="savedShowSort = !savedShowSort; savedShowFilter = false">
+                                            Sort {{ savedSortDir === 'asc' ? '↑' : '↓' }}
+                                        </button>
+                                        <Transition name="dropdown">
+                                            <div v-if="savedShowSort" class="toolbar-dropdown" @click.stop>
+                                                <p class="dropdown-section">Sort by</p>
+                                                <button :class="{ checked: savedSortField === 'date' }" @click="savedSortField = 'date'">
+                                                    <span class="check">{{ savedSortField === 'date' ? '✓' : '' }}</span> Date saved
+                                                </button>
+                                                <button :class="{ checked: savedSortField === 'club' }" @click="savedSortField = 'club'">
+                                                    <span class="check">{{ savedSortField === 'club' ? '✓' : '' }}</span> Club name
+                                                </button>
+                                                <div class="dropdown-divider"></div>
+                                                <p class="dropdown-section">Direction</p>
+                                                <button :class="{ checked: savedSortDir === 'asc' }" @click="savedSortDir = 'asc'">
+                                                    <span class="check">{{ savedSortDir === 'asc' ? '✓' : '' }}</span>
+                                                    {{ savedSortField === 'club' ? 'A to Z' : 'Oldest first' }}
+                                                </button>
+                                                <button :class="{ checked: savedSortDir === 'desc' }" @click="savedSortDir = 'desc'">
+                                                    <span class="check">{{ savedSortDir === 'desc' ? '✓' : '' }}</span>
+                                                    {{ savedSortField === 'club' ? 'Z to A' : 'Newest first' }}
+                                                </button>
+                                            </div>
+                                        </Transition>
+                                    </div>
+                                </div>
                                 <div class="saved-scroll">
                                     <ul>
-                                        <li v-for="item of savedItemsWithIcon" :key="item.url" class="saved-item">
+                                        <li v-for="item of processedSavedItems" :key="item.url" class="saved-item">
                                             <div class="saved-item-icon">
                                                 <graffiti-get-media
                                                     v-if="item.clubIcon"
@@ -142,12 +186,12 @@
                                                 <span v-else><i class="fa-regular fa-comment" style="color:#9ca3af"></i></span>
                                             </div>
                                             <div class="saved-item-body">
-                                                <span class="saved-meta">{{ item.value.clubTitle }}</span>
+                                                <span class="saved-meta">{{ (item.value.clubTitle || '').length > 35 ? item.value.clubTitle.slice(0, 35) + '…' : item.value.clubTitle }}</span>
                                                 <router-link :to="`/club/${item.value.clubId}`" class="saved-content">{{ item.value.content }}</router-link>
                                             </div>
                                             <button class="btn-remove" @click="unsaveItem(item)">✕</button>
                                         </li>
-                                        <li v-if="savedItems.length === 0" class="saved-empty">No saved messages yet.</li>
+                                        <li v-if="processedSavedItems.length === 0" class="saved-empty">No saved messages yet.</li>
                                     </ul>
                                 </div>
                             </div>
