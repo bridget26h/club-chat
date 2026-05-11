@@ -1996,13 +1996,12 @@ body {
     background: rgba(255,255,255,0.8);
 }
 
-
 .reply-quote {
-    background: #e2e2e2;
+    background: #f6f6f6;
     border-radius: 14px;
     padding: 8px 12px;
     font-size: 0.78rem;
-    color: #6b7280;
+    color: #555;
     max-width: 100%;
     width: fit-content;
     margin-bottom: 0;
@@ -2010,7 +2009,7 @@ body {
 }
 
 .mine .reply-quote {
-    background: #ebebeb;
+    background: #f6f6f6;
     color: #555;
 }
 
