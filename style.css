@@ -1926,9 +1926,14 @@ body {
 .bubble-col {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 2px;
     max-width: 100%;
+    align-items: flex-start;
 }
+.mine .bubble-col {
+    align-items: flex-end;
+}
+
 .reply-preview {
     display: flex;
     align-items: center;
@@ -1993,23 +1998,22 @@ body {
 
 
 .reply-quote {
-    background: #ebebeb;
+    background: #e2e2e2;
     border-radius: 14px;
     padding: 8px 12px;
     font-size: 0.78rem;
-    color: #555;
+    color: #6b7280;
     max-width: 100%;
-    margin-bottom: 2px;
+    width: fit-content;
+    margin-bottom: 0;
     line-height: 1.4;
 }
 
-/* quoted message is someone else's — shown in your own bubble */
 .mine .reply-quote {
     background: #ebebeb;
     color: #555;
 }
 
-/* quoted message is yours — shown in your own bubble (replying to yourself) */
 .mine .reply-quote.reply-quote-own {
     background: #89c4ff;
     color: #fff;
