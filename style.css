@@ -1993,7 +1993,7 @@ body {
 
 
 .reply-quote {
-    background: #e8e8e8;
+    background: #ebebeb;
     border-radius: 14px;
     padding: 8px 12px;
     font-size: 0.78rem;
@@ -2006,7 +2006,7 @@ body {
 /* quoted message is someone else's — shown in your own bubble */
 .mine .reply-quote {
     background: #ebebeb;
-    color: #8e8f91;
+    color: #555;
 }
 
 /* quoted message is yours — shown in your own bubble (replying to yourself) */
