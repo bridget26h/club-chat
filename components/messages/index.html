@@ -21,12 +21,14 @@
                 <div class="bubble-col">
                     <template v-if="replyTo">
                         <div class="reply-quote-label">
-                            <graffiti-actor-to-handle :actor="replyTo.actor" v-slot="{ handle }">
-                                {{ replyTo.actor === currentActor
-                                    ? 'Replied to themselves'
-                                    : replyTo.actor === actor
-                                        ? 'Replied to you'
-                                        : 'Replied to ' + (handle || '').replace('.graffiti.actor','') }}
+                            <graffiti-actor-to-handle :actor="replyTo.actor" v-slot="{ handle: replyHandle }">
+                                <graffiti-actor-to-handle :actor="actor" v-slot="{ handle: senderHandle }">
+                                    {{ replyTo.actor === actor
+                                        ? (senderHandle || '').replace('.graffiti.actor','') + ' replied to themselves'
+                                        : replyTo.actor === currentActor
+                                            ? (senderHandle || '').replace('.graffiti.actor','') + ' replied to you'
+                                            : (senderHandle || '').replace('.graffiti.actor','') + ' replied to ' + (replyHandle || '').replace('.graffiti.actor','') }}
+                                </graffiti-actor-to-handle>
                             </graffiti-actor-to-handle>
                         </div>
                         <div class="reply-quote" :class="{ 'reply-quote-own': replyTo.actor === currentActor }">{{ replyTo.content }}</div>
