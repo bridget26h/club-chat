@@ -12,7 +12,7 @@
             </graffiti-actor-to-handle>
         </div>
         <div class="message-body">
-            <div class="message-sender">
+            <div v-if="!replyTo" class="message-sender">
                 <graffiti-actor-to-handle :actor="actor" v-slot="{ handle }">
                     {{ (handle || '').replace('.graffiti.actor', '') }}
                 </graffiti-actor-to-handle>
