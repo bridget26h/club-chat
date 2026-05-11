@@ -23,7 +23,7 @@ function setup() {
     const graffiti = useGraffiti();
     const session = useGraffitiSession();
     const clubSearch = ref("");
-    const sidebarTab = ref("calendar");
+    const sidebarTab = ref("chats");
 
     const calendarOffset = ref(0);
     const todayDate = new Date().getDate();
